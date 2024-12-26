@@ -1,0 +1,238 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+ font-size: 14px;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+.maincontainer {
+  max-width: 820px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#innercontainer {
+  padding: 20px;
+}
+
+.logo {
+  height: 50px;
+  width: 150px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;}
+
+.fieldcontainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.fields {
+  display: flex;
+  flex-direction: row;
+}
+
+label {
+  width: 30%;
+  display: inline;
+}
+
+input[type="number"] {
+  margin-left: 5px;
+  border: 1px solid rgb(129, 161, 219);
+  width: 70%;
+ font-size: 14px;
+  border-radius: 5px;
+  display: inline-block;
+}
+input[type="text"] {
+  width: 70%;
+  padding: 3px;
+ font-size: 14px;
+  border: 1px solid rgb(129, 161, 219);
+  border-radius: 5px;
+  display: inline-block;
+}
+select{
+    width: 70%;
+    padding: 3px;
+   font-size: 14px;
+    border: 1px solid rgb(129, 161, 219);
+    border-radius: 5px;
+    display: inline-block;
+  }
+input[type="text"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill:hover,
+input[type="text"]:-webkit-autofill:focus {
+  background-color: #ffffff;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  box-shadow: 0 0 0 1000px #ffffff inset;
+}
+
+
+hr {
+  height: 30px;
+  border: none;
+  background-color: rgb(98, 144, 182);
+  border-radius: 5px;
+  width: 450px;
+  margin-bottom: 20px;
+  align-self: center;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+
+.form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+label {
+    font-size: 14px;
+    flex: 1;
+    margin-right: 10px;
+}
+button {
+  font-size: 14px;
+    background-color: #1d6897;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 200px;
+}
+button:hover {
+    background-color: #38a3e6;
+}
+table {
+  font-size: 14px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+table, th, td {
+    border: 1px solid #ccc;
+}
+th, td {
+    text-align: left;
+    padding: 7px;
+}
+th {
+    background-color: #1676b2 ;
+    color: #fff;
+}
+
+.heading{
+  padding: 10px;
+  background-color:skyblue; 
+  text-align: center;
+}
+.heading2{
+  padding: 10px;
+  background-color:rgb(173, 250, 192,0.4); 
+  text-align: center;
+}
+.heading3{
+  padding: 10px;
+  background-color:rgba(193, 173, 250, 0.4); 
+  text-align: left;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+.fieldcontainer{
+  display: flex;
+ justify-content: space-between;
+}
+
+.fieldcontainer .form-group{
+  width:45%;
+}
+.fieldcontainer2{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap:15px;
+}
+.fieldcontainer2 select{
+  width: 34%;
+}
+
+.topHeading{
+  text-align: center;
+  border-bottom:2px solid #1f77aa; 
+  border-radius: 7px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+    }
+    table {
+       font-size: 14px;
+    }
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    @page {
+      size: A4; /* Ensures content is confined to A4 size */
+      margin: 10mm; /* Add margins for neatness */
+  }
+
+    table, table * {
+        visibility: visible;
+    }
+    table {
+      font-size: 15.5px;
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ccc;
+    }
+    table, th, td {
+        border: 1px solid #ccc;
+    }
+    th {
+        background-color: #1676b2;
+        color: #fff;
+    }
+    td, th {
+        padding: 6px;
+        text-align: left;
+    }
+    .heading2{
+      padding: 6px;
+    }
+    .heading3{
+      padding: 6px;
+    }
+}

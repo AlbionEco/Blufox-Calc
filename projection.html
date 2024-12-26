@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blufox MBR Membrane projection</title>
+  <link rel="stylesheet" href="projection.css" />
+  <!-- favicon -->
+  <link rel="icon" type="image/png" href="for extra use.jpg" />
+ </head>
+
+<body>
+  <!-- navbar -->
+  <div id="nav-placeholder"></div>
+  <script>
+    // Function to load the navbar
+    function loadNavbar() {
+        fetch('navbar.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+    // Load the navbar when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', loadNavbar);
+</script>
+  <!-- navbar end -->
+
+  <!-- main container -->
+  <div class="maincontainer">
+    <!-- inner container -->
+    <div id="innercontainer">
+      <h3 class="topHeading">Blufox Projection Calculation</h3>
+      <form id="projectionForm">
+        <div class="form-group">
+          <label for="module">Select Membrane Module:</label>
+          <select id="module" required>
+            <option value="BF125">BF125</option>
+            <option value="BF200">BF200</option>
+            <option value="BF300">BF300</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="flowRate">Design average daily flow rate (KLD):</label>
+          <input type="text" id="flowRate" placeholder="Enter Flow Rate" required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+
+        <div class="form-group">
+          <label for="noOfTrain">Number of Train (train):</label>
+          <input type="text" id="noOfTrain" placeholder="Enter no of Train" required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+
+        <div class="form-group">
+          <label for="flux">Flux (LMH):</label>
+          <input type="text" id="flux" placeholder="Enter Flux" required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+
+        <div class="form-group">
+          <label for="noOfMembraneTank">Number of Membrane Tank :</label>
+          <input type="text" id="noOfMembraneTank" placeholder="Enter no of Membrane Tank" required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="workingHr">Working Hours :</label>
+          <input type="text" id="workingHr" placeholder="Enter workingHr" value=20 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <button type="button" onclick="calculateResults()" style="margin-bottom:40px;">Submit</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th colspan="3" style="background-color:rgb(203, 237, 252); text-align: left; color:black; font-weight: 400;">
+             <b> Blufox Ecoventures LLP</b>
+             <img src="bluefox-logo-with-tagline.png" alt="" class="logo" style="float: right; margin:10px;">
+              <br>
+              1006, Valantina Business hub, Nr.Shell Petrol Pump, L.P.Savani Road, Adajan , Surat 395009, Gujrat, India<br>
+              info@blufoxmembranes.com / blufox.ecoventures@gmail.com <br>
+              +919727822279 / +919924522279  
+              <span style="float:right ;font-weight: 600;">www.blufoxmembranes.com</span>
+             </th> 
+          </tr>
+          <tr>
+            <th colspan="3">
+             Blufox MBR Membranes Projection Sheet
+            </th> 
+         </tr>
+          <tr>
+            <th>Parameter</th>
+            <th colspan="2">Value</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTable">
+          <!-- Dynamic rows will be added here -->
+        </tbody>
+      </table>
+      <button type="button" onclick="printTable()" style="margin-top:40px; margin:40px 40% 0px 40%">Print Table</button>
+    </div>
+
+    <script>
+      function calculateResults() {
+
+
+        // Fetch user inputs
+        const module = document.getElementById('module').value;
+        const flowRate = parseFloat(document.getElementById('flowRate').value);
+        const noOfTrain = parseFloat(document.getElementById('noOfTrain').value);
+        const flux = parseFloat(document.getElementById('flux').value);
+        const noOfMembraneTank = parseFloat(document.getElementById('noOfMembraneTank').value);
+        const workingHr = document.getElementById('workingHr').value;
+
+
+        if (isNaN(flowRate) || isNaN(noOfTrain) || isNaN(flux) || isNaN(noOfMembraneTank)) {
+          alert('Please enter valid numeric values.');
+          return;
+        }
+
+        let membraneSurfaceAreaPerMBR = 0;
+        // Perform calculations based on formulas
+        if (module == "BF125") {
+          membraneSurfaceAreaPerMBR = 12.5;
+        } else if (module == "BF200") {
+          membraneSurfaceAreaPerMBR = 20;
+        } else if (module == "BF300") {
+          membraneSurfaceAreaPerMBR = 30;
+        }
+        const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
+        const NoofModulePerTrain = Math.ceil(TotalNumberOfModule / noOfTrain);
+        const MembraneSurfaceAreaPerTrain = NoofModulePerTrain * membraneSurfaceAreaPerMBR
+        const TotalMembraneSurfaceArea = parseFloat(TotalNumberOfModule * membraneSurfaceAreaPerMBR).toFixed(1);
+        const OperatingFlux = parseFloat(flux * 0.0238).toFixed(1);
+        const rawTimeFlux = parseFloat(flux * 83.34 / 100).toFixed(1);
+        const Timeflux = parseFloat(rawTimeFlux * 0.0238).toFixed(1);
+
+        const length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+        const width = 710 / 1000;
+        let height = 0;
+        let effectiveWaterDepth = 0;
+        let width2 = 0;
+        if (module == "BF125") {
+          height = 1300 / 1000;
+          effectiveWaterDepth = 1.6;
+          width2 = 2.3;
+        } else if (module == "BF200") {
+          height = 1800 / 1000;
+          effectiveWaterDepth = 2.1;
+          width2 = 3;
+        } else if (module == "BF300") {
+          height = 2300 / 1000;
+          effectiveWaterDepth = 2.7;
+          width2 = 4;
+        }
+        const surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3)
+        console.log(
+          surfaceareapertrain,
+          length,width,height
+        );
+        
+        const TotalMembraneTankVolume = parseFloat(noOfTrain * surfaceareapertrain).toFixed(1);
+        const lengthinsidepertank = parseFloat(TotalMembraneTankVolume / effectiveWaterDepth / width2).toFixed(1);
+        const RequiredTotalFlowrateforpeakflux = parseFloat(flowRate / workingHr).toFixed(1);
+        const filteration = 8;
+        const relaxation = 1;
+        const backwash = 1;
+        const RequiredBackwashFlowRate = parseFloat(RequiredTotalFlowrateforpeakflux * 1.5).toFixed(1);
+        const RequiredtotalAirFlowRate = parseFloat(TotalMembraneSurfaceArea * 0.3).toFixed(1);
+        const RequiredtotalAirFlowRatepereach = parseFloat(RequiredtotalAirFlowRate / noOfTrain).toFixed(1);
+        const preRequiredPumpDischargePressurePerEach = parseFloat(effectiveWaterDepth * 1.675).toFixed(1);
+        const BackwashNacloConcentration = 20;
+        const backwashRequiredChemicalSolutionVolume = 100;
+        const backwashRequiredChemicalQuantity = parseFloat(((((RequiredBackwashFlowRate * 1000 / 60) * 24) * 20 / 1000000) / 0.1)).toFixed(1);
+        const CebNacloConcentration = 500;
+        const CebRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+        const CebRequiredChemicalQuantityeachTime = parseFloat((CebRequiredChemicalSolutionVolume * 500 / 1000000) / 0.1).toFixed(1);
+        const CebChemicalSolutionInjectionTime = 20;
+        const CebChemicalInjectionFlowrate = parseFloat(CebRequiredChemicalSolutionVolume / CebChemicalSolutionInjectionTime).toFixed(1);
+        const CipNacloConcentration = 2000;
+        const CipRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+        const CipRequiredChemicalQuantityeachTime = parseFloat((CipRequiredChemicalSolutionVolume * 2000 / 1000000) / 0.1).toFixed(1);
+        const CipChemicalSolutionInjectionTime = 20;
+        const CipChemicalInjectionFlowrate = parseFloat(CipRequiredChemicalSolutionVolume / CipChemicalSolutionInjectionTime).toFixed(1);
+        const acidConcentration = 1000;
+        const acidRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+        const acidRequiredChemicalQuantityeachTime = parseFloat((acidRequiredChemicalSolutionVolume * 1000 / 1000000) / 0.3).toFixed(1);
+        const acidChemicalSolutionInjectionTime = 20;
+        const acidChemicalInjectionFlowrate = parseFloat(acidRequiredChemicalSolutionVolume / acidChemicalSolutionInjectionTime).toFixed(1);
+let ModuleSize = "";
+if(module == "BF125"){
+ModuleSize = "1000 x 534 x 46"
+}else if(module == "BF200"){
+ModuleSize = "1500 x 534 x 46"
+}else if(module == "BF300"){
+ModuleSize = "2000 x 534 x 46"
+}
+
+
+
+
+
+        //result table
+        const resultsTable = document.getElementById('resultsTable');
+        resultsTable.innerHTML = `
+            <tr class="heading">
+              <td colspan=3 style="text-align:center">1) Membrane Module</td>
+            </tr>
+                <tr>
+                    <td>Product Model</td>
+                    <td>${module}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Membrane Surface area per MBR</td>
+                    <td>${membraneSurfaceAreaPerMBR}</td>
+                    <td> m&sup2</td>
+                </tr>
+                <tr>
+                    <td>Design average daily Flow rate</td>
+                    <td>${flowRate} </td>
+                    <td>m&sup3/d</td></tr>
+                <tr>
+                    <td>Number of Train</td>
+                    <td>${noOfTrain} </td>
+                    <td>train</td>
+                </tr>
+                <tr>
+                    <td>Number of Module per Train/Frame</td>
+                    <td>${NoofModulePerTrain} </td>
+                    <td>module/train</td>
+                </tr>
+                <tr class="bold">
+                    <td>Total number of Module</td>
+                    <td>${TotalNumberOfModule} </td>
+                    <td>module</td>
+                </tr>
+                <tr>
+                    <td>Membrane surface area per train/Frame</td>
+                    <td>${MembraneSurfaceAreaPerTrain}</td>
+                    <td> m&sup2</td>
+                </tr>
+                <tr class="bold">
+                    <td>Total Membrane surface area</td>
+                    <td>${TotalMembraneSurfaceArea} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td>Operating Flux (Design Average) Dialy Flux</td>
+                    <td>${OperatingFlux} </td>
+                    <td>m/d</td>
+                </tr>
+                <tr class="bold">
+                    <td>Flux</td>
+                    <td>${flux} </td>
+                    <td>LMH</td>
+                </tr>
+<tr>
+                    <td>Time Flux (Average Flux)<br/>
+                       <span style="padding-left:15%;">Design by average daily flow</span></td>
+                    <td>${Timeflux} </td>
+                    <td>m/d</td>
+                </tr>
+                <tr>
+                    <td> </td>
+                    <td>${rawTimeFlux} </td>
+                    <td>LMH</td>
+                </tr>
+                <tr>
+                    <td>Working Hours of MBR Suction Pump</td>
+                    <td>${workingHr} </td>
+                    <td>hrs</td>
+                </tr>
+
+                <tr class="heading">
+                    <td colspan=3 style="text-align:center">2) Membrane Tank</td>
+                </tr>
+                <tr>
+                    <td>Number of Membrane Tank</td>
+                    <td>${noOfMembraneTank} </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Number of Module per Tank</td>
+                    <td>${noOfTrain} </td>
+                    <td></td>
+                </tr>
+                <tr class="bold">
+                    <td>Total Membrane Tank Volume (SWD)</td>
+                    <td>${TotalMembraneTankVolume}</td>
+                    <td>m&sup3</td>
+                </tr>
+                <tr>
+                    <td>Module Size and Volume (H x L x W)</td>
+                    <td>${ModuleSize}</td>
+                    <td>mm</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Length (inside, per tank)</td>
+                    <td>${lengthinsidepertank} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Width (inside, per tank)</td>
+                    <td>${width2} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Effective water depth </td>
+                    <td>${effectiveWaterDepth} </td>
+                    <td>m</td>
+                </tr>
+                <tr class="heading">
+                    <td colspan=3 style="text-align:center">3) Major equipment for Membrane</td>
+                </tr>
+                <tr class="heading2">
+                    <td colspan=3 style="text-align:center">a. Permeate Pump</td>
+                </tr>
+                <tr class="bold">
+                    <td>Required Total flow rate for peak flux</td>
+                    <td>${RequiredTotalFlowrateforpeakflux}</td>
+                    <td>m&sup3/hr</td>
+                </tr>
+                <tr>
+                    <td>Intermittent Operation</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Filtration</td>
+                    <td>${filteration} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Relaxation</td>
+                    <td>${relaxation} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Backwash 
+                        <span style="padding-left:10%">(after every 6 cycle at <1.5 bar)</span>
+                    </td>
+                    <td>${backwash} </td>
+                    <td>min</td>
+                </tr>
+                <tr class="heading2">
+                    <td colspan=3 style="text-align:center">b. Backwash Pump</td>
+                </tr>
+                <tr class="bold">
+                    <td>Required Backwash flow rate</td>
+                    <td>${RequiredBackwashFlowRate}</td>
+                    <td>m&sup3/hr</td>
+                </tr>
+                <tr class="heading2">
+                    <td colspan=3 style="text-align:center">c. Membrane Blower</td>
+                </tr>
+               <tr class="bold">
+                    <td>Required Total air flow rate</td>
+                    <td>${RequiredtotalAirFlowRate}</td>
+                    <td>Nm&sup3/min</td>
+                </tr>
+                <tr>
+                    <td>Required air flow rate per each</td>
+                    <td>${RequiredtotalAirFlowRatepereach}</td>
+                    <td>Nm&sup3/min</td>
+                </tr>
+                <tr>
+                    <td>Pre Required Pump discharge pressure per each</td>
+                    <td>${preRequiredPumpDischargePressurePerEach}</td>
+                    <td>bar</td>
+                </tr>
+                <tr class="heading">
+                    <td colspan=3 style="text-align:center">4) Chemical Cleaning System</td>
+                </tr>
+                <tr class="heading2">
+                    <td colspan=3 style="text-align:center">a. Required Chemical Cleaning</td>
+                </tr>
+                <tr>
+                    <td  class="heading3" colspan=2 >Backwash Chemical Cleaning (Daily)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;" >NaCLO Concentration</td>
+                    <td>${BackwashNacloConcentration}</td>
+                    <td>mg/L</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Required Chemical Solution volume </td>
+                    <td>${backwashRequiredChemicalSolutionVolume} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="bold">
+                    <td style="padding-left:15%;">Required Chemical Quantity</td>
+                    <td>${backwashRequiredChemicalQuantity} </td>
+                    <td>kg/day(10% concentration)</td>
+                </tr>
+                <tr>
+                    <td class="heading3" colspan=2 >CEB (Maintenance cleaning - Every 10-15 days)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">NaCLO Concentration</td>
+                    <td>${CebNacloConcentration} </td>
+                    <td>mg/L</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Required Chemical solution volume (2L/m2)</td>
+                    <td>${CebRequiredChemicalSolutionVolume} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="bold">
+                    <td style="padding-left:15%;">Required Chemical Quantity each time</td>
+                    <td>${CebRequiredChemicalQuantityeachTime} </td>
+                    <td>kg(10% Concentration)</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical solution injection time</td>
+                    <td>${CebChemicalSolutionInjectionTime} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td>${CebChemicalInjectionFlowrate} </td>
+                    <td>L/min</td>
+                </tr>
+                <tr>
+                    <td class="heading3" colspan=2 >CIP (Recovery cleaning - Every 4-6 Months)</td>
+                    <td></td>
+                    </tr>
+                <tr>
+                    <td style="padding-left:15%;">NaCLO Concentration</td>
+                    <td>${CipNacloConcentration} </td>
+                    <td>mg/L</td>
+                </tr>
+<tr>
+                    <td style="padding-left:15%;">Required Chemical solution volume (2L/m2)</td>
+                    <td>${CipRequiredChemicalSolutionVolume} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="bold">
+                    <td style="padding-left:15%;">Required Chemical Quantity each time</td>
+                    <td>${CipRequiredChemicalQuantityeachTime} </td>
+                    <td>kg(10% Concentration)</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical solution injection time</td>
+                    <td>${CipChemicalSolutionInjectionTime} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td>${CipChemicalInjectionFlowrate} </td>
+                    <td>L/min</td>
+                </tr>
+
+                <tr>
+                    <td class="heading3" colspan=2 >CIP (acid, Recovery cleaning by Citric acid)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Citric acid Concentration</td>
+                    <td>${acidConcentration} </td>
+                    <td>mg/L</td>
+                </tr>
+<tr>
+                    <td style="padding-left:15%;">Required Chemical solution volume (2L/m2)</td>
+                    <td>${acidRequiredChemicalSolutionVolume} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="bold">
+                    <td style="padding-left:15%;">Required Chemical Quantity each time</td>
+                    <td>${acidRequiredChemicalQuantityeachTime} </td>
+                    <td>kg(30% Concentration)</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical solution injection time</td>
+                    <td>${acidChemicalSolutionInjectionTime} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td>${acidChemicalInjectionFlowrate} </td>
+                    <td>L/min</td>
+                </tr>
+            <tr>
+              <td colspan=3 style="text-align:left; color:red;font-size:16px"><span class="bold">Note :</span> 
+                <br><span class="bold">*</span> If possible do the CIP in Separate Cleaning Tank with same Chemical Concentration
+                <br><span class="bold">*</span> MBR Module dimention are vary as per client Civil/Package tanks sizes. 
+                <br><span class="bold">*</span> This Projection is subject to MBR Membrane calculoation & design only.
+                </td>
+            </tr>
+            `;
+      }
+      function printTable() {
+        window.print();
+      }
+    </script>
+  </div>
+  </div>
+  <!-- navbar end -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+  crossorigin="anonymous"></script>
+</body>
+</html>
