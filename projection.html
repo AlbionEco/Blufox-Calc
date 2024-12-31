@@ -210,12 +210,12 @@
         const RequiredBackwashFlowRate = parseFloat(RequiredTotalFlowrateforpeakflux * 1.5).toFixed(1);
         let RequiredtotalAirFlowRate = 0;
         if (module.substring(0, 2) == "BF") {
-          RequiredtotalAirFlowRate =parseFloat(TotalMembraneSurfaceArea * 0.3).toFixed(1);
+          RequiredtotalAirFlowRate =parseFloat(TotalMembraneSurfaceArea * 0.3).toFixed(1)/60;
         } else if (module.substring(0,3) == "SUS"){
           RequiredtotalAirFlowRate =  parseFloat(TotalMembraneSurfaceArea * 0.25).toFixed(1);
         }
 
-        const RequiredtotalAirFlowRatepereach = parseFloat(RequiredtotalAirFlowRate / noOfTrain).toFixed(1);
+        const RequiredtotalAirFlowRatepereach = parseFloat(RequiredtotalAirFlowRate / noOfTrain).toFixed(1)/60;
         const requiredAirBlowerDischargePressure = parseFloat(effectiveWaterDepth * 1.675).toFixed(1);
         const BackwashNacloConcentration = 20;
         const backwashRequiredChemicalSolutionVolume = 100;
@@ -407,12 +407,12 @@ ModuleSize = "2000 x 1250 x 30"
                <tr class="bold">
                     <td>Required Total air flow rate</td>
                     <td>${RequiredtotalAirFlowRate}</td>
-                    <td>Nm&sup3/min</td>
+                    <td>Nm&sup3/hr</td>
                 </tr>
                 <tr>
                     <td>Required air flow rate per each</td>
                     <td>${RequiredtotalAirFlowRatepereach}</td>
-                    <td>Nm&sup3/min</td>
+                    <td>Nm&sup3/hr</td>
                 </tr>
                 <tr>
                     <td>Required Air Blower discharge pressure</td>
