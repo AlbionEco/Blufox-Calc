@@ -235,7 +235,15 @@
         const acidRequiredChemicalQuantityeachTime = parseFloat((acidRequiredChemicalSolutionVolume * 1000 / 1000000) / 0.3).toFixed(1);
         const acidChemicalSolutionInjectionTime = 20;
         const acidChemicalInjectionFlowrate = parseFloat(acidRequiredChemicalSolutionVolume / acidChemicalSolutionInjectionTime).toFixed(1);
-let ModuleSize = "";
+        const CebAcidConcentration = 250;
+        const CebacidRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+        const CebacidRequiredChemicalQuantityeachTime = parseFloat((CebacidRequiredChemicalSolutionVolume * 250 / 1000000) / 0.1).toFixed(1);
+        const CebAcidChemicalSolutionInjectionTime = 20;
+        const CebAcidChemicalInjectionFlowrate = parseFloat(CebacidRequiredChemicalSolutionVolume / CebAcidChemicalSolutionInjectionTime).toFixed(1);
+        
+        
+        
+        let ModuleSize = "";
 if(module == "BF125"){
 ModuleSize = "1000 x 534 x 46"
 }else if(module == "BF200"){
@@ -473,6 +481,36 @@ ModuleSize = "2000 x 1250 x 30"
                     <td>${CebChemicalInjectionFlowrate} </td>
                     <td>L/min</td>
                 </tr>
+                <tr>
+                    <td class="heading3" colspan=2 >CEB (acid, Maintenance cleaning by Citric acid)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">NaCLO Concentration</td>
+                    <td>${CebAcidConcentration} </td>
+                    <td>mg/L</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Required Chemical solution volume (2L/m2)</td>
+                    <td>${CebacidRequiredChemicalSolutionVolume} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="bold">
+                    <td style="padding-left:15%;">Required Chemical Quantity each time</td>
+                    <td>${CebacidRequiredChemicalQuantityeachTime} </td>
+                    <td>kg(30% Concentration)</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical solution injection time</td>
+                    <td>${CebAcidChemicalSolutionInjectionTime} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td>${CebAcidChemicalInjectionFlowrate} </td>
+                    <td>L/min</td>
+                </tr>
+
                 <tr>
                     <td class="heading3" colspan=2 >CIP (Recovery cleaning - Every 4-6 Months)</td>
                     <td></td>
