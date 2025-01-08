@@ -44,6 +44,7 @@
         <div class="form-group">
           <label for="module">Select Membrane Module:</label>
           <select id="module" required>
+            <option value="BF100">BF100</option>
             <option value="BF125">BF125</option>
             <option value="BF200">BF200</option>
             <option value="BF300">BF300</option>
@@ -129,7 +130,10 @@
 
         let membraneSurfaceAreaPerMBR = 0;
         // Perform calculations based on formulas
-        if (module == "BF125") {
+        
+        if (module == "BF100") {
+          membraneSurfaceAreaPerMBR = 10;
+        }else if (module == "BF125") {
           membraneSurfaceAreaPerMBR = 12.5;
         } else if (module == "BF200") {
           membraneSurfaceAreaPerMBR = 20;
@@ -156,7 +160,15 @@
         let effectiveWaterDepth = 0;
         let width2 = 0;
         let surfaceareapertrain = 0;
-        if (module == "BF125") {
+        
+        if (module == "BF100") {
+          length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+          width = 710 / 1000;
+          height = 1300 / 1000;
+          effectiveWaterDepth = 1.6;
+          width2 = 2.3;
+          surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+        }else if (module == "BF125") {
           length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
           width = 710 / 1000;
           height = 1300 / 1000;
@@ -244,7 +256,10 @@
         
         
         let ModuleSize = "";
-if(module == "BF125"){
+        
+if(module == "BF100"){
+ModuleSize = "1000 x 534 x 46"
+}else if(module == "BF125"){
 ModuleSize = "1000 x 534 x 46"
 }else if(module == "BF200"){
 ModuleSize = "1500 x 534 x 46"
