@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blufox MBR Membrane projection</title>
+  <link rel="stylesheet" href="projection.css" />
+  <!-- favicon -->
+  <link rel="icon" type="image/png" href="for extra use.jpg" />
+  <style>
+    body {
+      font-size: 13px;
+    }
+
+    input[type="number"] {
+      font-size: 13px;
+    }
+
+    input[type="text"] {
+      font-size: 13px;
+    }
+
+    #industryType,
+    #membraneType,
+    #designedMembraneType {
+      font-size: 13px;
+    }
+
+    label {
+      font-size: 13px;
+    }
+
+    button {
+      font-size: 13px;
+    }
+
+    table {
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 5px;
+    }
+
+    .heading {
+      padding: 7px;
+    }
+
+    .fieldcontainer2 {
+      gap: 10px;
+    }
+
+    .container {
+      width: 80%;
+      margin: 40px auto;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .display-4 {
+      font-weight: bold;
+    }
+
+    .row {
+      display: flex;
+    }
+
+    .col {
+      flex: 1;
+      padding: 10px;
+      border: 0.5px solid #ccc;
+    }
+
+    .col-2 {
+      flex: 2;
+    }
+
+    .col-3 {
+      flex: 3;
+    }
+
+    .col-4 {
+      flex: 4;
+    }
+
+    .borderrr {
+      border: 0.5px solid #ccc;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 100%;
+      }
+
+      table {
+        font-size: 13px;
+      }
+    }
+
+    @media print {
+      table {
+        font-size: 14px;
+      }
+
+      td,
+      th {
+        padding: 3px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- navbar -->
+  <div id="nav-placeholder"></div>
+  <script>
+    // Function to load the navbar
+    function loadNavbar() {
+      fetch('navbar.html')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById('nav-placeholder').innerHTML = data;
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+    // Load the navbar when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', loadNavbar);
+  </script>
+  <!-- navbar end -->
+
+  <!-- main container -->
+  <div class="maincontainer">
+    <!-- inner container -->
+    <div id="innercontainer">
+      <h3 class="topHeading">Blufox Projection Calculation</h3>
+      <form id="projectionForm">
+        <div class="form-group">
+          <label for="flowRate">Design Flow rate (m<sup>3</sup>/day):</label>
+          <input type="text" id="flowRate" value=100 required oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="averageFlux">Average Flux (LMH):</label>
+          <input type="text" id="averageFlux" value=14.5 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="minimumWaterTemperature">Minimum water temperature (&#8451):</label>
+          <input type="text" id="minimumWaterTemperature" value=20 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="industryType">Select Industry Type:</label>
+          <select id="industryType" required>
+            <option value="Municipal">Municipal</option>
+            <option value="Industrial">Industrial</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="OilGrease">Oil & Grease (mg/L):</label>
+          <input type="text" id="OilGrease" value=20 required oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="membraneType">Select Membrane Type:</label>
+          <select id="membraneType" required>
+            <option value="SquareType">Square Type</option>
+            <option value="CassetteType">Cassette Type</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="noOfTrain">No. of Train (train):</label>
+          <input type="text" id="noOfTrain" value=2 required oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="designedMembraneType">Select Designed Membrane Type:</label>
+          <select id="designedMembraneType" required>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="noOfDutyMembraneUnitPerTrain">No. of "Duty" membrane unit per train (units):</label>
+          <input type="text" id="noOfDutyMembraneUnitPerTrain" value=2 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="noOfstandByMembraneUnitPerTrain">No. of "Stand-by" membrane unit per train (units):</label>
+          <input type="text" id="noOfstandByMembraneUnitPerTrain" value=0 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="noOfDutyBlower">No. of duty blower:</label>
+          <input type="text" id="noOfDutyBlower" value=1 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="pipeSize">CIP Pump Pipe Size: (mm)</label>
+          <input type="text" id="pipeSize" value=160 required oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="pipeLength">CIP Pump Pipe Length: (m)</label>
+          <input type="text" id="pipeLength" value=20 required oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="CIPrunningTimeForChemicalInjection">Running time for Chemical Injection: (min)</label>
+          <input type="text" id="CIPrunningTimeForChemicalInjection" value=20 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="CIPLiftingheight">CIP Pump Lifting Height: (m)</label>
+          <input type="text" id="CIPLiftingheight" value=3.5 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="BackwashLiftingHeight">Backwash Pump Lifting Height: (min)</label>
+          <input type="text" id="BackwashLiftingHeight" value=4.5 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="NacloConcentrationOfChemical">NaClO concentration of Chemical: (%)</label>
+          <input type="text" id="NacloConcentrationOfChemical" value=12 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="NaohConcentrationOfChemical">NaOH concentration of Chemical: (%)</label>
+          <input type="text" id="NaohConcentrationOfChemical" value=25 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+        <div class="form-group">
+          <label for="AcidConcentrationOfChemical">Acid concentration of Chemical: (%)</label>
+          <input type="text" id="AcidConcentrationOfChemical" value=50 required
+            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+        </div>
+
+        <button type="button" onclick="calculateResults()" style="margin-bottom:40px;">Submit</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th colspan="3"
+              style="background-color:rgb(203, 237, 252); text-align: left; color:black; font-weight: 400;">
+              <b> Blufox Ecoventures LLP</b>
+              <img src="bluefox-logo-with-tagline.png" alt="" class="logo" style="float: right; margin:10px;">
+              <br>
+              1006, Valentina Business hub, Nr.Shell Petrol Pump, L.P.Savani Road, Adajan , Surat 395009, Gujrat,
+              India<br>
+              info@blufoxmembranes.com / blufox.ecoventures@gmail.com <br>
+              +919727822279 / +919924522279
+              <span style="float:right ;font-weight: 600;">www.blufoxmembranes.com</span>
+            </th>
+          </tr>
+          <tr>
+            <th colspan="3">
+              Blufox MBR Membranes Projection Sheet
+            </th>
+          </tr>
+          <tr>
+            <th>Parameter</th>
+            <th colspan="2">Value</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTable">
+          <!-- Dynamic rows will be added here -->
+        </tbody>
+      </table>
+      <button type="button" onclick="printTable()" style="margin-top:40px; margin:40px 40% 0px 40%">Print Table</button>
+    </div>
+
+    <script>
+
+      document.getElementById('designedMembraneType').innerHTML +=
+        '<option value="B420-12B6-00">B420-12B6-00</option> <option value="B320-12B6-00">B320-12B6-00</option> <option value="B220-12B6-00">B220-12B6-00</option><option value="B420-12B12-00">B420-12B12-00</option><option value="B320-12B12-00">B320-12B12-00</option><option value="B220-12B12-00">B220-12B12-00</option>'
+        ;
+      document.getElementById("membraneType").addEventListener("change", function () {
+        const membraneType = document.getElementById("membraneType").value;
+        const designedMembraneType = $('#designedMembraneType');
+
+        designedMembraneType.empty();
+
+        if (membraneType == "SquareType") {
+          $('#designedMembraneType').append(
+            '<option value="B420-12B6-00">B420-12B6-00</option> <option value="B320-12B6-00">B320-12B6-00</option> <option value="B220-12B6-00">B220-12B6-00</option><option value="B420-12B12-00">B420-12B12-00</option><option value="B320-12B12-00">B320-12B12-00</option><option value="B220-12B12-00">B220-12B12-00</option>'
+          );
+        } else if (membraneType == "CassetteType") {
+          $('#designedMembraneType').append(
+            '<option value="USPMW-12B38-00">USPMW-12B38-00</option><option value="USPMW-12B38-01">USPMW-12B38-01</option><option value="USPMW-12B38-02">USPMW-12B38-02</option><option value="USPMW-12B38-03">USPMW-12B38-03</option><option value="USPMW-12B57-00">USPMW-12B57-00</option><option value="USPMW-12B57-01">USPMW-12B57-01</option><option value="USPMW-12B57-02">USPMW-12B57-02</option><option value="USPMW-12B57-03">USPMW-12B57-03</option>'
+          )
+        }
+      });
+
+
+      function calculateResults() {
+
+        const flowRate = Number(document.getElementById("flowRate").value);
+        const averageFlux = Number(document.getElementById("averageFlux").value);
+        const minimumWaterTemperature = Number(document.getElementById("minimumWaterTemperature").value);
+        const industryType = document.getElementById("industryType").value;
+        const OilGrease = Number(document.getElementById("OilGrease").value);
+        const membraneType = document.getElementById("membraneType").value;
+        const noOfTrain = Number(document.getElementById("noOfTrain").value);
+        const designedMembraneType = document.getElementById("designedMembraneType").value;
+        const noOfDutyMembraneUnitPerTrain = Number(document.getElementById("noOfDutyMembraneUnitPerTrain").value);
+        const noOfstandByMembraneUnitPerTrain = Number(document.getElementById("noOfstandByMembraneUnitPerTrain").value);
+        const noOfDutyBlower = Number(document.getElementById("noOfDutyBlower").value);
+        const pipeSize = Number(document.getElementById("pipeSize").value);
+        const pipeLength = Number(document.getElementById("pipeLength").value);
+        const CIPrunningTimeForChemicalInjection = Number(document.getElementById("CIPrunningTimeForChemicalInjection").value);
+        const CIPLiftingheight = Number(document.getElementById("CIPLiftingheight").value);
+        const BackwashLiftingHeight = Number(document.getElementById("BackwashLiftingHeight").value);
+        const NacloConcentrationOfChemical = Number(document.getElementById("NacloConcentrationOfChemical").value);
+        const NaohConcentrationOfChemical = Number(document.getElementById("NaohConcentrationOfChemical").value);
+        const AcidConcentrationOfChemical = Number(document.getElementById("AcidConcentrationOfChemical").value);
+
+
+        const Cycle = 10;
+        const Filtration = 9;
+        const Rest = 1;
+
+        const subaverageflux1 = averageFlux * 24 / 1000;
+        const operatingFlux = averageFlux * Cycle / Filtration;
+        const suboperatingflux1 = operatingFlux * 24 / 1000;
+        const temperatureCorrection = (1 + 0.0217 * (25 - minimumWaterTemperature)) ** (-1);
+        const averageFlux2 = averageFlux * temperatureCorrection;
+        const subaverageflux2 = averageFlux2 * 24 / 1000;
+        const operatingFlux2 = averageFlux2 * Cycle / Filtration;
+        const suboperatingflux2 = operatingFlux2 * 24 / 1000;
+        const requiredMembraneAreaPerTrain = Math.ceil(flowRate / (averageFlux2 * 21 / 1000) / noOfTrain);
+        let membraneAreaPerUnit = 0;
+        let PumpLiftingHeight = 0;
+        let Municipal = 0;
+        let Industrial = 0;
+        let Blowerwaterdepth = 0;
+        if (designedMembraneType == "USPMW-12B38-00") {
+          membraneAreaPerUnit = 1824;
+          PumpLiftingHeight = 4.5;
+          Municipal = 5;
+          Industrial = 7.5;
+          Blowerwaterdepth = 3.5;
+        } else if (designedMembraneType == "USPMW-12B38-01") {
+          membraneAreaPerUnit = 1368;
+          PumpLiftingHeight = 4.5;
+          Municipal = 3.8;
+          Industrial = 0.71;
+          Blowerwaterdepth = 3.5;
+        } else if (designedMembraneType == "USPMW-12B38-02") {
+          membraneAreaPerUnit = 912;
+          PumpLiftingHeight = 4.5;
+          Municipal = 2.6;
+          Industrial = 3.9;
+          Blowerwaterdepth = 3.5;
+        } else if (designedMembraneType == "USPMW-12B38-03") {
+          membraneAreaPerUnit = 456;
+          PumpLiftingHeight = 4.5;
+          Municipal = 1.4;
+          Industrial = 2.1;
+          Blowerwaterdepth = 3.5;
+        } else if (designedMembraneType == "USPMW-12B57-00") {
+          membraneAreaPerUnit = 2736;
+          PumpLiftingHeight = 5.5;
+          Municipal = 5;
+          Industrial = 7.5;
+          Blowerwaterdepth = 4.5;
+        } else if (designedMembraneType == "USPMW-12B57-01") {
+          membraneAreaPerUnit = 2052;
+          PumpLiftingHeight = 5.5;
+          Municipal = 3.8;
+          Industrial = 5.7;
+          Blowerwaterdepth = 4.5;
+        } else if (designedMembraneType == "USPMW-12B57-02") {
+          membraneAreaPerUnit = 1368;
+          PumpLiftingHeight = 5.5;
+          Municipal = 2.6;
+          Industrial = 3.9;
+          Blowerwaterdepth = 4.5;
+        } else if (designedMembraneType == "USPMW-12B57-03") {
+          membraneAreaPerUnit = 684;
+          PumpLiftingHeight = 5.5;
+          Municipal = 1.4;
+          Industrial = 2.1;
+          Blowerwaterdepth = 4.5;
+        } else if (designedMembraneType == "B420-12B6-00") {
+          membraneAreaPerUnit = 480;
+          PumpLiftingHeight = 2.4;
+          Municipal = 4.8;
+          Industrial = 7.2;
+          Blowerwaterdepth = 1.9;
+        } else if (designedMembraneType == "B320-12B6-00") {
+          membraneAreaPerUnit = 360;
+          PumpLiftingHeight = 2.4;
+          Municipal = 3.6;
+          Industrial = 5.4;
+          Blowerwaterdepth = 1.9;
+        } else if (designedMembraneType == "B220-12B6-00") {
+          membraneAreaPerUnit = 240;
+          PumpLiftingHeight = 2.4;
+          Municipal = 2.4;
+          Industrial = 3.6;
+          Blowerwaterdepth = 1.9;
+        } else if (designedMembraneType == "B420-12B12-00") {
+          membraneAreaPerUnit = 960;
+          PumpLiftingHeight = 3.5;
+          Municipal = 4.8;
+          Industrial = 7.2;
+          Blowerwaterdepth = 3.1;
+        } else if (designedMembraneType == "B320-12B12-00") {
+          membraneAreaPerUnit = 720;
+          PumpLiftingHeight = 3.5;
+          Municipal = 3.6;
+          Industrial = 5.4;
+          Blowerwaterdepth = 3.1;
+        } else if (designedMembraneType == "B220-12B12-00") {
+          membraneAreaPerUnit = 480;
+          PumpLiftingHeight = 3.5;
+          Municipal = 2.4;
+          Industrial = 3.6;
+          Blowerwaterdepth = 3.1;
+        }
+
+
+        const designDutyMembraneareapertrain = membraneAreaPerUnit * noOfDutyMembraneUnitPerTrain;
+        const designStnadbymembraneareapertrain = membraneAreaPerUnit * noOfstandByMembraneUnitPerTrain;
+        const totalmembraneunit = noOfTrain * noOfDutyMembraneUnitPerTrain;
+
+        const totalmembraneunitstandby = noOfTrain * noOfstandByMembraneUnitPerTrain
+        const TotaldesignMembraneAreaDuty = membraneAreaPerUnit * totalmembraneunit;
+        const TotaldesignMembraneAreaStandBy = noOfTrain * noOfstandByMembraneUnitPerTrain;
+        const totalDesignedMembraneArea = TotaldesignMembraneAreaDuty + TotaldesignMembraneAreaStandBy;
+        const subdesignfluxaverage = flowRate / TotaldesignMembraneAreaDuty;
+        const designfluxaverage = subdesignfluxaverage * 1000 / 24;
+        const designfluxoperation = designfluxaverage * Cycle / Filtration;
+        const subdesignfluxoperation = designfluxoperation * 24 / 1000;
+        const filtrationTime = Filtration * (1440 / Cycle) / 60;
+        const restTime = 24 - filtrationTime;
+        const Quantity = Math.ceil((flowRate / 1440 * 24 / filtrationTime / noOfTrain * 1.15) * 100) / 100;
+        const PumpMaxTMP = 6;
+        const PumpPressureLoss = 2;
+        const PumpMargin = Math.ceil((PumpMaxTMP + PumpLiftingHeight + PumpPressureLoss) * 0.1);
+        const PumpTotalDynamicHead = Math.ceil((PumpMaxTMP + PumpLiftingHeight + PumpPressureLoss + PumpMargin) * 100) / 100;
+        let RequiredAirVolume = 0;
+        if (industryType == "Municipal") {
+          RequiredAirVolume = Municipal;
+        } else {
+          RequiredAirVolume = Industrial;
+        }
+        const TotalAirVolume = RequiredAirVolume * totalmembraneunit;
+        const BlowerQuantity = TotalAirVolume / noOfDutyBlower * 1.15;
+        const BlowerPressureLossofDiffuserPipe = 5;
+        const BlowerPressureLossofInstrument = 2;
+        const BlowerMargin = 2;
+        const BlowertotalDynamicHead = (Blowerwaterdepth * 9.8 + BlowerPressureLossofDiffuserPipe + BlowerPressureLossofInstrument + BlowerMargin);
+        const noofPump = 1;
+        const watervolumeinMembranePerTrain = 2 * designDutyMembraneareapertrain / 1000;
+        const watervolumeinPipesPerTrain = (pipeSize / 1000 / 2) ** 2 * 3.14 * pipeLength;
+        const totalwatervolumePertrain = Math.ceil((watervolumeinMembranePerTrain + watervolumeinPipesPerTrain) * 100) / 100;
+        const CIPQuantity = Math.ceil((totalwatervolumePertrain / CIPrunningTimeForChemicalInjection / noofPump * 1.15) * 100) / 100;
+        const CIPPressureLoss = 2;
+        const CIPmargin = Math.ceil((CIPLiftingheight + CIPPressureLoss) * 0.1);
+        const CIPTotalDynamicHead = (CIPLiftingheight + CIPPressureLoss + CIPmargin);
+        const nooftank = 1;
+        const waterVolumeUsedforCIPperTrain = totalwatervolumePertrain * 2;
+        const tankCapacity = waterVolumeUsedforCIPperTrain * 1.5;
+        const ChemicalInjection = CIPrunningTimeForChemicalInjection;
+        const ChemicalSoaking = 90;
+        const WaterFlushing = ChemicalInjection;
+        const backwashnoofPump = 1;
+        const Fluxofbackwash = designfluxaverage < 12.5 ? 20 : designfluxaverage * 1.5;
+        const DutyMembraneareaperTrain = TotaldesignMembraneAreaDuty / noOfTrain;
+        const BackwashQuantity = Fluxofbackwash * 24 / 1000 * DutyMembraneareaperTrain / 1440 / backwashnoofPump * 1.15;
+        const BackwashmaxTMP = 6;
+        const backwashpressureloss = 2;
+        const BackwashMargin = Math.ceil((BackwashmaxTMP + BackwashLiftingHeight + backwashpressureloss) * 0.1);
+        const BackwashTotalDynamicHead = BackwashmaxTMP + BackwashLiftingHeight + backwashpressureloss + BackwashMargin;
+        const NacloNoofPump = 1;
+        const NacloChemicalInjectionRatioForCIP = 500;
+        const NacloChemicalInjectionRatioForHCIP = 3000;
+        const NaclosubQuantity = NacloChemicalInjectionRatioForCIP * (CIPQuantity / 1.15) / 1000 / (NacloConcentrationOfChemical / 100) * 1.15;
+        const NacloQuantity = NacloChemicalInjectionRatioForHCIP * (CIPQuantity / 1.15) / 1000 / (NacloConcentrationOfChemical / 100) * 1.15;
+        const NacloTotalDynamicHead = 0.2;
+        const NaclotankNoOfTank = 1;
+        const NacloRequiredChemicalperCIP = totalwatervolumePertrain * noOfTrain * NacloChemicalInjectionRatioForCIP / 1000 / (NacloConcentrationOfChemical / 100);
+        const NacloRequiredChemicalperHCIP = totalwatervolumePertrain * noOfTrain * NacloChemicalInjectionRatioForHCIP / 1000 / (NacloConcentrationOfChemical / 100);
+        const NacloTankCapacityMoreThan = Math.round(NacloRequiredChemicalperHCIP);
+        const NaohNoofPump = 1;
+        const NaohChemicalInjectionRatioForCIP = 200;
+        const NaohChemicalInjectionRatioForHCIP = 5000;
+        const NaohsubQuantity = NaohChemicalInjectionRatioForCIP * (CIPQuantity / 1.15) / 1000 / (NaohConcentrationOfChemical / 100) * 1.15;
+        const NaohQuantity = NaohChemicalInjectionRatioForHCIP * (CIPQuantity / 1.15) / 1000 / (NaohConcentrationOfChemical / 100) * 1.15;
+        const NaohTotalDynamicHead = 0.2;
+        const NaohtankNoOfTank = 1;
+        const NaohRequiredChemicalperCIP = totalwatervolumePertrain * noOfTrain * NaohChemicalInjectionRatioForCIP / 1000 / (NaohConcentrationOfChemical / 100);
+        const NaohRequiredChemicalperHCIP = totalwatervolumePertrain * noOfTrain * NaohChemicalInjectionRatioForHCIP / 1000 / (NaohConcentrationOfChemical / 100);
+        const NaohTankCapacityMoreThan = Math.ceil(NaohRequiredChemicalperHCIP);
+        const AcidNoofPump = 1;
+        const AcidChemicalInjectionRatioForCIP = 1000;
+        const AcidChemicalInjectionRatioForHCIP = 10000;
+        const AcidsubQuantity = AcidChemicalInjectionRatioForCIP * (CIPQuantity / 1.15) / 1000 / (AcidConcentrationOfChemical / 100) * 1.15;
+        const AcidQuantity = AcidChemicalInjectionRatioForHCIP * (CIPQuantity / 1.15) / 1000 / (AcidConcentrationOfChemical / 100) * 1.15;
+        const AcidTotalDynamicHead = 0.2;
+        const AcidtankNoOfTank = 1;
+        const AcidRequiredChemicalperCIP = totalwatervolumePertrain * noOfTrain * AcidChemicalInjectionRatioForCIP / 1000 / (AcidConcentrationOfChemical / 100);
+        const AcidRequiredChemicalperHCIP = totalwatervolumePertrain * noOfTrain * AcidChemicalInjectionRatioForHCIP / 1000 / (AcidConcentrationOfChemical / 100);
+        const AcidTankCapacityMoreThan = Math.ceil(AcidRequiredChemicalperHCIP);
+
+
+        //result table
+        const resultsTable = document.getElementById('resultsTable');
+        resultsTable.innerHTML = `
+                <tr>
+                    <td>Design Flow Rate</td>
+                    <td>${flowRate}</td>
+                    <td>m&sup3/day</td>
+                </tr>
+                <tr>
+                    <td>Average Flux (25 °C)</td>
+                    <td>${parseFloat(averageFlux).toFixed(2)}</td>
+                    <td> LMH (${parseFloat(subaverageflux1).toFixed(2)}m/day)</td>
+                </tr>
+                <tr>
+                    <td>Operating Flux (25 °C)</td>
+                    <td>${parseFloat(operatingFlux).toFixed(2)} </td>
+                    <td>LMH (${parseFloat(suboperatingflux1).toFixed(2)}m/day)</td></tr>
+                <tr>
+                    <td>Minimum water temperature</td>
+                    <td>${parseFloat(minimumWaterTemperature).toFixed(2)} </td>
+                    <td>&#8451</td>
+                </tr>
+                <tr>
+                    <td>Temperature Correction</td>
+                    <td>${parseFloat(temperatureCorrection).toFixed(2)} </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Average Flux 
+                      <span style="padding-left:15%;">25 °C</span></td>
+                    <td>${parseFloat(averageFlux2).toFixed(2)} </td>
+                    <td>LMH (${parseFloat(subaverageflux2).toFixed(2)}m/day)</td>
+                </tr>
+                <tr>
+                    <td>Operating Flux 
+                      <span style="padding-left:15%;">25 °C</span></td>
+                    <td>${parseFloat(operatingFlux2).toFixed(2)} </td>
+                    <td>LMH (${parseFloat(suboperatingflux2).toFixed(2)}m/day)</td>
+                </tr>
+                <tr>
+                    <td>Industry Type</td>
+                    <td>${industryType}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Oil & Grease</td>
+                    <td>${parseFloat(OilGrease).toFixed(2)} </td>
+                    <td>mg/L</td>
+                </tr>
+                <tr>
+                    <td>Membrane Type</td>
+                    <td>${membraneType} </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>No.Of Train</td>
+                    <td>${parseFloat(noOfTrain).toFixed(2)} </td>
+                    <td>train</td>
+                </tr>
+                <tr>
+                    <td>Required Membrane area per train</td>
+                    <td>${parseFloat(requiredMembraneAreaPerTrain).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td class="bold">Design Membrane Type</td>
+                    <td>${designedMembraneType} </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="bold">Membrane area per unit</td>
+                    <td>${membraneAreaPerUnit} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td>No. of "Duty" membrane unit per train</td>
+                    <td>${parseFloat(noOfDutyMembraneUnitPerTrain).toFixed(2)} </td>
+                    <td>units</td>
+                </tr>
+                <tr>
+                    <td>No. of "Stand-by" membrane unit per train</td>
+                    <td>${parseFloat(noOfstandByMembraneUnitPerTrain).toFixed(2)} </td>
+                    <td>units</td>
+                </tr>
+   <tr>
+                    <td>Designed "Duty" membrane area per train</td>
+                    <td>${parseFloat(designDutyMembraneareapertrain).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td>Designed "Stand-by" membrane area per train</td>
+                    <td>${parseFloat(designStnadbymembraneareapertrain).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+    <tr>
+                    <td>Total Membrane Unit</td>
+                    <td>${parseFloat(totalmembraneunit).toFixed(2)} </td>
+                    <td>units</td>
+                </tr>
+                    <tr>
+                    <td><span style="padding-left:10%"> Duty</span></td>
+                    <td>${parseFloat(totalmembraneunit).toFixed(2)} </td>
+                    <td>units</td>
+                </tr>
+
+                    <tr>
+                    <td><span style="padding-left:10%"> Stand-by </span></td>
+                    <td>${parseFloat(totalmembraneunitstandby).toFixed(2)} </td>
+                    <td>units</td>
+                </tr>
+                    <tr>
+                    <td> Total Designed Membrane area</td>
+                    <td>${parseFloat(totalDesignedMembraneArea).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%"> Duty</span></td>
+                    <td>${parseFloat(TotaldesignMembraneAreaDuty).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%"> Stand-by </span></td>
+                    <td>${parseFloat(TotaldesignMembraneAreaStandBy).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td>Designed Flux 
+                      <span style="padding-left:10%"> Average</span></td>
+                    <td>${parseFloat(designfluxaverage).toFixed(2)} </td>
+                    <td> LMH (${parseFloat(subdesignfluxaverage).toFixed(2)}m/day)</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:38%"> Operation</span></td>
+                    <td>${parseFloat(designfluxoperation).toFixed(2)} </td>
+                    <td>LMH (${parseFloat(subdesignfluxoperation).toFixed(2)}m/day)</td>
+                </tr>
+                <tr>
+                    <td>Basic Operation Condition</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%"> 1 Cycle </span>  </td>
+                    <td>${Cycle} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Filtration </span>  </td>
+                    <td>${Filtration} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Rest (Relaxation)</span>  </td>
+                    <td>${Rest} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td>Backwash</td>
+                    <td>Can be applied less than 100kPa</td>
+                    <td></td>
+                </tr>
+                
+<tr class="heading">
+                    <td colspan=3 style="text-align:center">Permeate Pump</td>
+                </tr>
+                <tr>
+                    <td>Filtration Time</td>
+                    <td>${parseFloat(filtrationTime).toFixed(2)} </td>
+                    <td>h/d</td>
+                </tr>
+                <tr>
+                    <td>Rest Time</td>
+                    <td>${parseFloat(restTime).toFixed(2)} </td>
+                    <td>h/d</td>
+                </tr>
+
+                <tr>
+                    <td> Quantity  </td>
+                    <td>${parseFloat(Quantity).toFixed(2)} </td>
+                    <td></td>
+                </tr>
+<tr>
+                    <td>Head</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Max. TMP </span> </td>
+                    <td>${parseFloat(PumpMaxTMP).toFixed(2)} </td>
+                    <td>m</td>
+                </tr><tr>
+                    <td><span style="padding-left:10%"> Lifting Height </span> </td>
+                    <td>${PumpLiftingHeight} </td>
+                    <td>m</td>
+                </tr><tr>
+                    <td>  <span style="padding-left:10%"> Pressure Loss </span>  </td>
+                    <td>${PumpPressureLoss} </td>
+                    <td>m</td>
+                </tr><tr>
+                    <td> <span style="padding-left:10%">  Margin</span>   </td>
+                    <td>${parseFloat(PumpMargin).toFixed(2)} </td>
+                    <td>m</td>
+                </tr><tr>
+                    <td> <span style="padding-left:10%"> Total Dynamic head </span>   </td>
+                    <td>${parseFloat(PumpTotalDynamicHead).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr class="heading">
+                    <td colspan=3 style="text-align:center">Blower for Membrane</td>
+                </tr>
+                
+                <tr>
+                    <td> Required air volume</td>
+                    <td>${parseFloat(RequiredAirVolume).toFixed(2)} </td>
+                    <td>m&sup3/min</td>
+                </tr>
+                <tr>
+                    <td>Total air volume</td>
+                    <td>${parseFloat(TotalAirVolume).toFixed(2)} </td>
+                    <td>m&sup3/min</td>
+                </tr>
+                <tr>
+                    <td>No. of duty blower</td>
+                    <td>${parseFloat(noOfDutyBlower).toFixed(2)} </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td>${parseFloat(BlowerQuantity).toFixed(2)} </td>
+                    <td>m&sup3/min (included 15% margin)</td>
+                </tr>
+<tr>
+                    <td>Head</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Water Depth</span></td>
+                    <td>${parseFloat(Blowerwaterdepth).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Pressure loss of diffuser pipe</span></td>
+                    <td>${parseFloat(BlowerPressureLossofDiffuserPipe).toFixed(2)} </td>
+                    <td>kPa</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Pressure loss of Instrument</span></td>
+                    <td>${parseFloat(BlowerPressureLossofInstrument).toFixed(2)} </td>
+                    <td>kPa</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Margin</span></td>
+                    <td>${parseFloat(BlowerMargin).toFixed(2)} </td>
+                    <td>kPa</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">TotalDynamic head</span></td>
+                    <td>${parseFloat(BlowertotalDynamicHead).toFixed(2)} </td>
+                    <td>kPa</td>
+                </tr>
+                 <tr class="heading">
+                    <td colspan=3 style="text-align:center">CIP Pump</td>
+                </tr>
+                <tr>
+                  <td colspan=3>
+                    Pump is recommended to design as common pump for all trains.
+                  </td>
+                  </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Pipe Size</span></td>
+                    <td>${pipeSize} </td>
+                    <td>mm</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Pipe Length</span></td>
+                    <td>${pipeLength} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td>No. of Pump</td>
+                    <td>${parseFloat(noofPump).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                <tr>
+                    <td>Water volume in membrane per train</td>
+                    <td>${parseFloat(watervolumeinMembranePerTrain).toFixed(2)} </td>
+                    <td>m&sup3</td>
+                </tr>
+                <tr>
+                    <td>Water volume in Pipes per train</td>
+                    <td>${parseFloat(watervolumeinPipesPerTrain).toFixed(2)} </td>
+                    <td>m&sup3</td>
+                </tr>
+                <tr>
+                    <td>Total water volume per train</td>
+                    <td>${parseFloat(totalwatervolumePertrain).toFixed(2)} </td>
+                    <td>m&sup3</td>
+                </tr>
+                <tr>
+                    <td>Running Time for chemical injection</td>
+                    <td>${parseFloat(CIPrunningTimeForChemicalInjection).toFixed(2)} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td>${parseFloat(CIPQuantity).toFixed(2)} </td>
+                    <td>m&sup3/min (included 15% margin)</td>
+                </tr>
+                <tr>
+                    <td>Head</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+<tr>
+                    <td><span style="padding-left:10%">CIP Lifting Height</span></td>
+                    <td>${parseFloat(CIPLiftingheight).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Pressure Loss</span></td>
+                    <td>${parseFloat(CIPPressureLoss).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Margin</span></td>
+                    <td>${parseFloat(CIPmargin).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Total Dynamic Head</span></td>
+                    <td>${parseFloat(CIPTotalDynamicHead).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr class="heading">
+                    <td colspan=3 style="text-align:center">Permeate Tank</td>
+                </tr>
+                <tr>
+                  <td colspan=3>Permeate tank is designed to store the water volume of 1 train CIP at least.</td>
+                </tr>
+                <tr>
+                    <td>No. of tank</td>
+                    <td>${parseFloat(nooftank).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                <tr>
+                    <td>Water volume used for CIP per train</td>
+                    <td>${parseFloat(waterVolumeUsedforCIPperTrain).toFixed(2)} </td>
+                    <td>m&sup3</td>
+                </tr>
+                
+                <tr>
+                    <td>Tank Capacity</td>
+                    <td>${parseFloat(tankCapacity).toFixed(2)} </td>
+                    <td>m&sup3 (included 50% margin)</td>
+                </tr>
+                <tr>
+                    <td>CIP time chart</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Chemical Injection</span></td>
+                    <td>${parseFloat(ChemicalInjection).toFixed(2)} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Chemical Soaking</span></td>
+                    <td>${parseFloat(ChemicalSoaking).toFixed(2)} </td>
+                    <td>min</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Water Flushing</span></td>
+                    <td>${parseFloat(WaterFlushing).toFixed(2)} </td>
+                    <td>min</td>
+                </tr>
+                <tr class="heading">
+                    <td colspan=3 style="text-align:center">Backwash Pump</td>
+                </tr>
+                 <tr>
+                  <td colspan=3>
+                    If backwash is needed, design with use below. </br>
+                    Pump is recommended to design as common pump for all trains.
+                  </td>
+                  </tr>
+                <tr>
+                    <td>No. of Pump</td>
+                    <td>${parseFloat(backwashnoofPump).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                <tr>
+                    <td>Flux of Backwash</td>
+                    <td>${parseFloat(Fluxofbackwash).toFixed(2)} </td>
+                    <td>LMH</td>
+                </tr>
+                <tr>
+                    <td>Duty memberane area per train</td>
+                    <td>${parseFloat(DutyMembraneareaperTrain).toFixed(2)} </td>
+                    <td>m&sup2</td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td>${parseFloat(BackwashQuantity).toFixed(2)} </td>
+                    <td>m&sup3/min (included 15% margin)</td>
+                </tr>
+                <tr>
+                    <td>Head</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+<tr>
+                    <td><span style="padding-left:10%">Max. TMP</span></td>
+                    <td>${parseFloat(BackwashmaxTMP).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Lifting Height</span></td>
+                    <td>${parseFloat(BackwashLiftingHeight).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Pressure Loss</span></td>
+                    <td>${parseFloat(backwashpressureloss).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td><span style="padding-left:10%">Margin</span></td>
+                    <td>${parseFloat(BackwashMargin).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                  <tr>
+                    <td><span style="padding-left:10%">Total Dynamic Head</span></td>
+                    <td>${parseFloat(BackwashTotalDynamicHead).toFixed(2)} </td>
+                    <td>m</td>
+                </tr>
+                <tr class="heading3">
+              <td colspan=3 style="text-align:center">NaClO Pump</td>
+            </tr>
+                   <tr>
+                    <td colspan=3> Metering pump can be applied for both CIP and H-CIP.  </td>
+                </tr>
+                <tr>
+                    <td>No. of Pump</td>
+                    <td>${parseFloat(NacloNoofPump).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                   <tr>
+                    <td>Concentration of Chemical</td>
+                    <td>${parseFloat(NacloConcentrationOfChemical).toFixed(2)} </td>
+                    <td>%</td>
+                </tr>
+                <tr>
+                    <td>Chemical Injection Ratio for CIP</td>
+                    <td>${parseFloat(NacloChemicalInjectionRatioForCIP).toFixed(2)} </td>
+                    <td>ppm</td>
+                </tr>
+                   <tr>
+                    <td>Chemical Injection Ratio for H-CIP</td>
+                    <td>${parseFloat(NacloChemicalInjectionRatioForHCIP).toFixed(2)} </td>
+                    <td>ppm</td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td>${parseFloat(NaclosubQuantity).toFixed(2)} - ${parseFloat(NacloQuantity).toFixed(2)} </td>
+                    <td>L/min (included 15% margin)</td>
+                </tr>
+                   <tr>
+                    <td>Total Dynamic Head</td>
+                    <td>${parseFloat(NacloTotalDynamicHead).toFixed(2)} </td>
+                    <td>Mpa</td>
+                </tr>
+                <tr class="heading3">
+              <td colspan=3 style="text-align:center">NaClO Tank</td>
+            </tr>
+                <tr>
+                    <td>No. of tank</td>
+                    <td>${parseFloat(NaclotankNoOfTank).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                   <tr>
+                    <td>Capacity more than</td>
+                    <td>${parseFloat(NacloTankCapacityMoreThan).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+                <tr>
+                    <td>Required Chemical per CIP</td>
+                    <td>${parseFloat(NacloRequiredChemicalperCIP).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+
+                   <tr>
+                    <td>Required Chemical per H-CIP</td>
+                    <td>${parseFloat(NacloRequiredChemicalperHCIP).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="heading2">
+              <td colspan=3 style="text-align:center">NaOH Pump</td>
+            </tr>
+                   <tr>
+                    <td colspan=3> Metering pump can be applied for both CIP and H-CIP.  </td>
+                </tr>
+                <tr>
+                    <td>NaohNoofPump</td>
+                    <td>${parseFloat(NaohNoofPump).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                   <tr>
+                    <td>Concentration of Chemical</td>
+                    <td>${parseFloat(NaohConcentrationOfChemical).toFixed(2)} </td>
+                    <td>%</td>
+                </tr>
+                <tr>
+                    <td>Chemical Injection Ratio for CIP</td>
+                    <td>${parseFloat(NaohChemicalInjectionRatioForCIP).toFixed(2)} </td>
+                    <td>ppm</td>
+                </tr>
+                   <tr>
+                    <td>Chemical Injection Ratio for H-CIP</td>
+                    <td>${parseFloat(NaohChemicalInjectionRatioForHCIP).toFixed(2)} </td>
+                    <td>ppm</td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td>${parseFloat(NaohsubQuantity).toFixed(2)} - ${parseFloat(NaohQuantity).toFixed(2)} </td>
+                    <td>L/min (included 15% margin)</td>
+                </tr>
+                   <tr>
+                    <td>Total Dynamic Head</td>
+                    <td>${parseFloat(NaohTotalDynamicHead).toFixed(2)} </td>
+                    <td>Mpa</td>
+                </tr>
+                <tr class="heading2">
+              <td colspan=3 style="text-align:center">NaOH Tank</td>
+            </tr>
+                <tr>
+                    <td>No. of tank</td>
+                    <td>${parseFloat(NaohtankNoOfTank).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                   <tr>
+                    <td>Capacity more than</td>
+                    <td>${parseFloat(NaohTankCapacityMoreThan).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+                <tr>
+                    <td>Required Chemical per CIP</td>
+                    <td>${parseFloat(NaohRequiredChemicalperCIP).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+
+                   <tr>
+                    <td>Required Chemical per H-CIP</td>
+                    <td>${parseFloat(NaohRequiredChemicalperHCIP).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+                <tr class="heading3">
+              <td colspan=3 style="text-align:center">Acid Pump</td>
+            </tr>
+                   <tr>
+                    <td colspan=3> Metering pump can be applied for both CIP and H-CIP.  </td>
+                </tr>
+                <tr>
+                    <td>AcidNoofPump</td>
+                    <td>${parseFloat(AcidNoofPump).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                   <tr>
+                    <td>Concentration of Chemical</td>
+                    <td>${parseFloat(AcidConcentrationOfChemical).toFixed(2)} </td>
+                    <td>%</td>
+                </tr>
+                <tr>
+                    <td>Chemical Injection Ratio for CIP</td>
+                    <td>${parseFloat(AcidChemicalInjectionRatioForCIP).toFixed(2)} </td>
+                    <td>ppm</td>
+                </tr>
+                   <tr>
+                    <td>Chemical Injection Ratio for H-CIP</td>
+                    <td>${parseFloat(AcidChemicalInjectionRatioForHCIP).toFixed(2)} </td>
+                    <td>ppm</td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td>${parseFloat(AcidsubQuantity).toFixed(2)} - ${parseFloat(AcidQuantity).toFixed(2)} </td>
+                    <td>L/min (included 15% margin)</td>
+                </tr>
+                   <tr>
+                    <td>Total Dynamic Head</td>
+                    <td>${parseFloat(AcidTotalDynamicHead).toFixed(2)} </td>
+                    <td>Mpa</td>
+                </tr>
+                <tr class="heading3">
+              <td colspan=3 style="text-align:center">Acid Tank</td>
+            </tr>
+                <tr>
+                    <td>No. of tank</td>
+                    <td>${parseFloat(AcidtankNoOfTank).toFixed(2)} </td>
+                    <td>No.</td>
+                </tr>
+                   <tr>
+                    <td>Capacity more than</td>
+                    <td>${parseFloat(AcidTankCapacityMoreThan).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+                <tr>
+                    <td>Required Chemical per CIP</td>
+                    <td>${parseFloat(AcidRequiredChemicalperCIP).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+
+                   <tr>
+                    <td>Required Chemical per H-CIP</td>
+                    <td>${parseFloat(AcidRequiredChemicalperHCIP).toFixed(2)} </td>
+                    <td>L</td>
+                </tr>
+            <tr>
+              <td colspan=3>
+<div class="container">
+      <h5><b> Chemical Cleaning Condition </b></h5>
+  <div class="row heading">
+    <div class="col-2">Type</div>
+    <div class="col-4">Chemical</div>
+    <div class="col-3">Concentration</div>
+    <div class="col-3">Cycle</div>
+  </div>
+
+  <div class="row">
+    <div class="col-2 borderrr">CIP</div>
+    <div class="col-4 borderrr">Caustic Soda / Sodium Hypochlorite</div>
+    <div class="col-3 borderrr">200ppm / 500ppm (mixture)</div>
+    <div class="col-3 borderrr">Every 1-2 weeks</div>
+  </div>
+
+  <div class="row">
+    <div class="col-2 borderrr"></div>
+    <div class="col-4 borderrr">Sulfuric Acid or Hydrochloric Acid or Citric Acid</div>
+    <div class="col-3 borderrr">1000 ppm or 2000 ppm</div>
+    <div class="col-3 borderrr">Every 2-4 weeks</div>
+  </div>
+
+  <div class="row">
+    <div class="col-2 borderrr">H-CIP</div>
+    <div class="col-4 borderrr">Caustic Soda / Sodium Hypochlorite</div>
+    <div class="col-3 borderrr">5000 ppm / 3000 ppm (mixture)</div>
+    <div class="col-3 borderrr">Every 3-6 months</div>
+  </div>
+
+  <div class="row">
+    <div class="col-2 borderrr"></div>
+    <div class="col-4 borderrr">Sulfuric Acid or Hydrochloric Acid or Citric Acid</div>
+    <div class="col-3 borderrr">10,000 ppm or 20,000 ppm</div>
+    <div class="col-3 borderrr">Every 3-6 months</div>
+  </div>
+
+  <div class="row">
+    <div class="col-2 borderrr">OLC</div>
+    <div class="col-4 borderrr">Same as H-CIP</div>
+    <div class="col-3 borderrr"></div>
+    <div class="col-3 borderrr">If necessary</div>
+  </div>
+</div>
+
+
+              </td>
+            </tr>
+            `;
+      }
+      function printTable() {
+        window.print();
+      }
+    </script>
+  </div>
+  </div>
+  <!-- navbar end -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
