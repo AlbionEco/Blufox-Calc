@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blufox MBR Membrane projection</title>
+  <title>Blufox Sumitomo Membrane projection</title>
   <link rel="stylesheet" href="projection.css" />
   <!-- favicon -->
   <link rel="icon" type="image/png" href="for extra use.jpg" />
@@ -143,7 +143,7 @@
   <div class="maincontainer">
     <!-- inner container -->
     <div id="innercontainer">
-      <h3 class="topHeading">Blufox Projection Calculation</h3>
+      <h3 class="topHeading">Sumitomo Projection Calculation</h3>
       <form id="projectionForm">
         <div class="form-group">
           <label for="flowRate">Design Flow rate (m<sup>3</sup>/day):</label>
@@ -575,13 +575,13 @@
                     <td>${parseFloat(requiredMembraneAreaPerTrain).toFixed(2)} </td>
                     <td>m&sup2</td>
                 </tr>
-                <tr>
-                    <td class="bold">Design Membrane Type</td>
+                <tr  class="bold">
+                    <td>Design Membrane Type</td>
                     <td>${designedMembraneType} </td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td class="bold">Membrane area per unit</td>
+                <tr  class="bold">
+                    <td>Membrane area per unit</td>
                     <td>${membraneAreaPerUnit} </td>
                     <td>m&sup2</td>
                 </tr>
@@ -1120,7 +1120,6 @@
                     <td>${parseFloat(AcidRequiredChemicalperCIP).toFixed(2)} </td>
                     <td>L</td>
                 </tr>
-
                    <tr>
                     <td>Required Chemical per H-CIP</td>
                     <td>${parseFloat(AcidRequiredChemicalperHCIP).toFixed(2)} </td>

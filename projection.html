@@ -43,7 +43,7 @@
       <form id="projectionForm">
         <div class="form-group">
           <label for="module">Select Membrane Module:</label>
-          <select id="module" required>
+          <select id="module" required
             <option value="BF100">BF100</option>
             <option value="BF125">BF125</option>
             <option value="BF200">BF200</option>
@@ -51,6 +51,10 @@
             <option value="SUS10">SUS10</option>
             <option value="SUS20">SUS20</option>
             <option value="SUS30">SUS30</option>
+            <option value="BF500D(430)">BF500D (430)</option>
+            <option value="BF500D(370)">BF500D (370)</option>
+            <option value="BF500D(340)">BF500D (340)</option>
+            <option value="BF500S">BF500S</option>
           </select>
         </div>
         <div class="form-group">
@@ -145,6 +149,14 @@
           membraneSurfaceAreaPerMBR = 20;
         } else if (module == "SUS30") {
           membraneSurfaceAreaPerMBR = 30;
+        } else if (module == "BF500D(430)") {
+          membraneSurfaceAreaPerMBR = 40.9;
+        }else if (module == "BF500D(370)") {
+          membraneSurfaceAreaPerMBR = 34.4;
+        }else if (module == "BF500D(340)") {
+          membraneSurfaceAreaPerMBR = 31.6;
+        }else if (module == "BF500S") {
+          membraneSurfaceAreaPerMBR = 28;
         }
         const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
         const NoofModulePerTrain = Math.ceil(TotalNumberOfModule / noOfTrain);
@@ -210,6 +222,34 @@
           effectiveWaterDepth = 3.5;
           width2 = 2.5;
           surfaceareapertrain = (Number(length) + 0.8) * (width + 0.6) * (height + 1);
+        } else if (module == "BF500D(430)") {
+          length = Math.ceil(((NoofModulePerTrain*49)+((NoofModulePerTrain+1)*40)+100)*100)/100/1000;
+          width = 0.844;
+          height = 2.598;
+          effectiveWaterDepth = 3.598;
+          width2 = 1.444;
+          surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+        } else if (module == "BF500D(370)") {
+          length = Math.ceil(((NoofModulePerTrain*49)+((NoofModulePerTrain+1)*40)+100)*100)/100/1000;
+          width = 0.844;
+          height = 2.598;
+          effectiveWaterDepth = 3.598;
+          width2 = 1.444;
+          surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+        } else if (module == "BF500D(340)") {
+          length = Math.ceil(((NoofModulePerTrain*49)+((NoofModulePerTrain+1)*40)+100)*100)/100/1000;
+          width = 0.844;
+          height = 2.598;
+          effectiveWaterDepth = 3.598;
+          width2 = 1.444;
+          surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+        } else if (module == "BF500S") {
+          length = Math.ceil(((NoofModulePerTrain+1)*85+100)*100)/100/1000;
+          width = 0.53;
+          height = 2.1388;
+          effectiveWaterDepth = 2.4388;
+          width2 = 3.7;
+          surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
         }
         
         
@@ -271,6 +311,14 @@ ModuleSize = "1300 x 680 x 30"
 ModuleSize = "1300 x 1250 x 30"
 }else if(module == "SUS30"){
 ModuleSize = "2000 x 1250 x 30"
+}else if(module == "BF500D(430)"){
+ModuleSize = "2198 x 844 x 49"
+}else if(module == "BF500D(370)"){
+ModuleSize = "2198 x 844 x 49"
+}else if(module == "BF500D(340)"){
+ModuleSize = "2198 x 844 x 49"
+}else if(module == "BF500S"){
+ModuleSize = "1838.8 x 355 x 217"
 }
 
         //result table
@@ -310,7 +358,7 @@ ModuleSize = "2000 x 1250 x 30"
                 </tr>
                 <tr>
                     <td>Membrane surface area per train/Frame</td>
-                    <td>${MembraneSurfaceAreaPerTrain}</td>
+                    <td>${parseFloat(MembraneSurfaceAreaPerTrain).toFixed(2)}</td>
                     <td> m&sup2</td>
                 </tr>
                 <tr class="bold">
