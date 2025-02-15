@@ -219,7 +219,7 @@ th {
         border: 1px solid #ccc;
     }
     table, th, td {
-        border: 1px solid #ccc;
+        border: 1px solid #ccc; 
     }
     th {
         background-color: #1676b2;
