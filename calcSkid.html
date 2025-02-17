@@ -168,19 +168,6 @@
       } else if (MembraneType == "SUS") {
         document.getElementById("pipeThickness").style.display = "none";
 
-// Create the new form group element
-const newFormGroup = document.createElement('div');
-newFormGroup.className = 'form-group';
-newFormGroup.id = 'newFormGroup';
-newFormGroup.innerHTML = `
-  <label>3/4" Nipple QTY. (Nos.)</label>
-  <input type="number" id="Nippleqty_3by4" class="Nippleqty_3by4" required />
-`;
-
-
-const submitButton = document.querySelector('#projectionForm button[type="button"]');
-document.getElementById("projectionForm").insertBefore(newFormGroup, submitButton);
-
         $('#Model').append(
           '<option value="SUS97">SUS 97</option><option value="SUS113">SUS 113</option><option value="SUS193">SUS 193</option><option value="SUS227">SUS 227</option><option value="SUS313">SUS 313</option>'
         )
@@ -251,8 +238,6 @@ document.getElementById("projectionForm").insertBefore(newFormGroup, submitButto
           }
         }
       } else if (MembraneType == "SUS") {
-        const Nippleqty_3by4 = document.getElementById("Nippleqty_3by4").value;
-  console.log("Nippleqty_3by4", Nippleqty_3by4);
 
         if (Model == "SUS97") {
           thickboxpipe5050 = ((((qty - 1) * 0.06) + 0.085) * 8 + (0.58 * 6) + (1.875 * 4) + (0.15 * 8));
@@ -371,11 +356,6 @@ document.getElementById("projectionForm").insertBefore(newFormGroup, submitButto
         <tr>
           <td>12.5 m&sup2 Membrane Frame Qty.</td>
           <td>${qty}</td>
-          <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>3/4" Nipple Qty</td>
-          <td>${document.getElementById("Nippleqty_3by4").value}</td>
           <td>Nos.</td>
         </tr>
         <tr>
