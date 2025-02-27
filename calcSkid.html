@@ -358,12 +358,12 @@
           <td>Nos.</td>
         </tr>
         <tr>
-          <td>50mm x 50mm x 2mm Thick Box Pipe</td>
+          <td>${qty <= 10 ? "40mm x 40mm x 2mm Thick Box Pipe " : "50mm x 50mm x 2mm Thick Box Pipe"}</td>
           <td>${parseFloat(thickboxpipe5050).toFixed(2)}</td>
           <td> mtr</td>
         </tr>
         <tr>
-          <td>100mm x 50mm x 2mm Thick Box Pipe</td>
+          <td>${qty <= 10 ? "80mm x 40mm x 2mm Thick Box Pipe " : "100mm x 50mm x 2mm Thick Box Pipe"}</td>
           <td>${parseFloat(thickboxpipe10050).toFixed(2)}</td>
           <td> mtr</td>
         </tr>
@@ -393,29 +393,19 @@
           <td>Nos.</td>
         </tr>
         <tr>
-          <td>2" FLANGE</td>
-          <td>${Flange_2}</td>
+          <td>1.5" FLANGE</td>
+          <td>${Number(Flange_2) + Flange_3}</td>
           <td>Nos.</td>
         </tr>
         <tr>
-          <td>2" SCH 10 PIPE</td>
-          <td>${parseFloat(SCH10Pipe_2).toFixed(2)}</td>
+          <td>1.5" SCH 10 PIPE</td>
+          <td>${parseFloat(SCH10Pipe_2 + SCH10Pipe_3).toFixed(2) }</td>
           <td>mtr</td>
         </tr>
         <tr>
-          <td>2" SCH 10 90 DEG. ELBOW</td>
+          <td>1.5" SCH 10 90 DEG. ELBOW</td>
           <td>${SCH1090Deg_2}</td>
           <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>3" FLANGE</td>
-          <td>${Flange_3}</td>
-          <td>Nos.</td>
-        </tr>
-         <tr>
-          <td>3" SCH 10 PIPE</td>
-          <td>${SCH10Pipe_3}</td>
-          <td>mtr</td>
         </tr>
         <tr>
           <td>2 THK. COVER PLATE</td>
