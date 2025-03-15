@@ -274,22 +274,22 @@
         const backwashRequiredChemicalQuantity = parseFloat(((((RequiredBackwashFlowRate * 1000 / 60) * 24) * 20 / 1000000) / 0.1)).toFixed(1);
         const CebNacloConcentration = 500;
         const CebRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
-        const CebRequiredChemicalQuantityeachTime = parseFloat((CebRequiredChemicalSolutionVolume * 500 / 1000000) / 0.1).toFixed(1);
+        const CebRequiredChemicalQuantityeachTime = parseFloat((CebRequiredChemicalSolutionVolume * Number(CebNacloConcentration) / 1000000) / 0.1).toFixed(1);
         const CebChemicalSolutionInjectionTime = 20;
         const CebChemicalInjectionFlowrate = parseFloat(CebRequiredChemicalSolutionVolume / CebChemicalSolutionInjectionTime).toFixed(1);
-        const CipNacloConcentration = 2000;
+        const CipNacloConcentration = 3000;
         const CipRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
-        const CipRequiredChemicalQuantityeachTime = parseFloat((CipRequiredChemicalSolutionVolume * 2000 / 1000000) / 0.1).toFixed(1);
+        const CipRequiredChemicalQuantityeachTime = parseFloat((CipRequiredChemicalSolutionVolume * Number(CipNacloConcentration) / 1000000) / 0.1).toFixed(1);
         const CipChemicalSolutionInjectionTime = 20;
         const CipChemicalInjectionFlowrate = parseFloat(CipRequiredChemicalSolutionVolume / CipChemicalSolutionInjectionTime).toFixed(1);
-        const acidConcentration = 1000;
+        const acidConcentration = 10000;
         const acidRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
-        const acidRequiredChemicalQuantityeachTime = parseFloat((acidRequiredChemicalSolutionVolume * 1000 / 1000000) / 0.3).toFixed(1);
+        const acidRequiredChemicalQuantityeachTime = parseFloat((acidRequiredChemicalSolutionVolume * Number(acidConcentration) / 1000000) / 0.3).toFixed(1);
         const acidChemicalSolutionInjectionTime = 20;
         const acidChemicalInjectionFlowrate = parseFloat(acidRequiredChemicalSolutionVolume / acidChemicalSolutionInjectionTime).toFixed(1);
-        const CebAcidConcentration = 250;
+        const CebAcidConcentration = 300;
         const CebacidRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
-        const CebacidRequiredChemicalQuantityeachTime = parseFloat((CebacidRequiredChemicalSolutionVolume * 250 / 1000000) / 0.3).toFixed(1);
+        const CebacidRequiredChemicalQuantityeachTime = parseFloat((CebacidRequiredChemicalSolutionVolume * Number(CebAcidConcentration) / 1000000) / 0.3).toFixed(1);
         const CebAcidChemicalSolutionInjectionTime = 20;
         const CebAcidChemicalInjectionFlowrate = parseFloat(CebacidRequiredChemicalSolutionVolume / CebAcidChemicalSolutionInjectionTime).toFixed(1);
         
@@ -549,7 +549,7 @@ ModuleSize = "1838.8 x 355 x 217"
                     <td></td>
                 </tr>
                 <tr>
-                    <td style="padding-left:15%;">NaCLO Concentration</td>
+                    <td style="padding-left:15%;">Citric acid Concentration</td>
                     <td>${CebAcidConcentration} </td>
                     <td>mg/L</td>
                 </tr>
