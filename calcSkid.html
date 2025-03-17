@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculator for Skid</title>
+  <title>BF Skid Claculation</title>
   <link rel="stylesheet" href="projection.css" />
   <!-- favicon -->
-  <link rel="icon" type="image/png" href="Albion_Only_Logo-removebg-preview.png" />
+  <link rel="icon" type="image/png" href="for extra use.jpg" />
   <style>
     table tr td {
       border-collapse: collapse;
@@ -28,15 +28,15 @@
       margin-left: 10px;
       font-size: 14px !important;
       border-radius: 5px;
-      border: 1px solid rgb(129,161,219);
+      border: 1px solid rgb(129, 161, 219);
     }
 
     .radio {
       width: 33%;
       padding: 0px 5px;
-      border: 1px solid rgb(129,161,219);
+      border: 1px solid rgb(129, 161, 219);
       border-radius: 5px;
-      margin: 0px 10px;
+      margin: 5px 10px;
     }
 
     .radio label {
@@ -47,6 +47,8 @@
       margin-bottom: 25px;
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
   </style>
 </head>
@@ -78,15 +80,14 @@
 
   <div class="maincontainer">
     <div id="innercontainer">
-      <h3 class="topHeading">Skid Calculation</h3>
+      <h3 class="topHeading">BF Series(Single frame) Skid Calculation</h3>
 
       <!-- ------------Enter container container------- -->
       <form id="projectionForm">
-        <div><b>MS-TW</b></div><br>
 
         <div class="form-group">
           <label>Membrane Type</label>
-          <select name="MembraneType" id="MembraneType" required>
+          <select name="MembraneType" id="MembraneType" required onchange="redirectFunction()">
             <option value="BF">BF Series</option>
             <option value="SUS">SUS Series</option>
           </select>
@@ -94,6 +95,9 @@
         <div class="form-group">
           <label for="Model">Select Model</label>
           <select id="Model" required>
+            <option value="BF125">BF 125</option>
+            <option value="BF200">BF 200</option>
+            <option value="BF300">BF 300</option>
           </select>
         </div>
 
@@ -114,6 +118,13 @@
           <input type="text" oninput="this.value = this.value.replace(/[^\d.]/g, '')" id="qty" class="qty" required />
         </div>
 
+
+<div class="form-group">
+          <label>Site / Project Name (Optional)</label>
+          <input type="text"  id="sitename" class="sitename" required />
+        </div>
+
+        
         <!-- SUBMIT BUTTON  -->
         <button type="button" onclick="calculateResults()" style="margin-bottom:40px;">Submit</button>
     </div>
@@ -134,6 +145,14 @@
   </div>
 
   <script>
+    function redirectFunction() {
+      const MembraneType = document.getElementById("MembraneType").value;
+      if (MembraneType == "SUS") {
+        window.location.href = "calcskidSUS.html";
+      } else if (MembraneType == "BF") {
+        window.location.href = "calcSkid.html";
+      }
+    }
     //onwindow load
     //  window.onload = function () {
     // const cookieName = "token";
@@ -149,29 +168,8 @@
     //     window.location.href = "index.html";
     //   }
 
-    document.getElementById('Model').innerHTML +=
-      '<option value="BF125">BF 125</option> <option value="BF200">BF 200</option> <option value="BF300">BF 300</option>'
-      ;
 
-    document.getElementById("MembraneType").addEventListener("change", function () {
-      const MembraneType = document.getElementById("MembraneType").value;
-      const Model = $('#Model');
 
-      Model.empty();
-
-      if (MembraneType == "BF") {
-        document.getElementById("pipeThickness").style.display = "block";
-        $('#Model').append(
-          '<option value="BF125">BF 125</option> <option value="BF200">BF 200</option> <option value="BF300">BF 300</option>'
-        );
-      } else if (MembraneType == "SUS") {
-        document.getElementById("pipeThickness").style.display = "none";
-
-        $('#Model').append(
-          '<option value="SUS97">SUS 97</option><option value="SUS113">SUS 113</option><option value="SUS193">SUS 193</option><option value="SUS227">SUS 227</option><option value="SUS313">SUS 313</option>'
-        )
-      }
-    });
 
 
     function calculateResults() {
@@ -183,20 +181,9 @@
       console.log("MembraneType", MembraneType);
       let ThreadedNipple6 = 1;
 
-      let thickboxpipe5050 = 0;
-      let thickboxpipe10050 = 0;
-      const thickboxpipe4015 = ((((qty - 1) * 0.06) + 0.085) + 0.1) * 6;
-      const thickboxpipe5025 = ((qty * 2) + 2) * 0.05;
-      const threadedCoupling4_3by4 = qty * 2;
-      const SCH10Pipe_3by4 = qty % 2 == 0 ? qty * 0.4 : (qty - 1) * 0.4;
-      const SCH1090Deg_3by4 = qty % 2 == 0 ? qty * 2 : (qty - 1) * 2;
-      const Flange_2 = 5;
-      let SCH10Pipe_2 = 0;
-      const SCH1090Deg_2 = 4;
-      const Flange_3 = 1;
-      const SCH10Pipe_3 = 0.2;
-      let thkCoverplate_1 = 0;
-      let thkCoverplate_2 = 0;
+     
+     
+    
 
 
 
@@ -223,7 +210,7 @@
           }
         } else if (Pipe == "50mm") {
           if (Model == "BF125") {
-            thickBoxpipe = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085) + 0.08) * 6);
+            thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
             thickBoxpipe50 = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
 
           } else if (Model == "BF200") {
@@ -236,44 +223,10 @@
             ThreadedNipple6 = 2;
           }
         }
-      } else if (MembraneType == "SUS") {
-
-        if (Model == "SUS97") {
-          thickboxpipe5050 = ((((qty - 1) * 0.06) + 0.085) * 8 + (0.58 * 6) + (1.875 * 4) + (0.15 * 8));
-          thickboxpipe10050 = ((0.128 * 4) + ((((qty - 1) * 0.06) + 0.085) * 2)) + 0.42;
-          SCH10Pipe_2 = ((((qty * 0.06) + 0.125) + 0.17 + 0.05) * 2) + 2.68;
-          thkCoverplate_1 = (((qty - 1) * 0.06) + 0.085 + 0.1 + 0.03) + 0.71;
-          thkCoverplate_2 = 0.35 + 0.35 + 0.1;
-        } else if (Model == "SUS113") {
-          thickboxpipe5050 = ((((qty - 1) * 0.06) + 0.085) * 8 + (0.58 * 6) + (2.075 * 4) + (0.15 * 8));
-          thickboxpipe10050 = ((0.128 * 4) + ((((qty - 1) * 0.06) + 0.085) * 2)) + 0.42;
-          SCH10Pipe_2 = ((((qty * 0.06) + 0.125) + 0.17 + 0.05) * 2) + 2.88;
-          thkCoverplate_1 = (((qty - 1) * 0.06) + 0.085 + 0.1 + 0.03) + 0.71;
-          thkCoverplate_2 = 0.35 + 0.35 + 0.1;
-        } else if (Model == "SUS193") {
-          thickboxpipe5050 = ((((qty - 1) * 0.06) + 0.085) * 8 + (1.15 * 6) + (1.875 * 4) + (0.15 * 8));
-          thickboxpipe10050 = ((0.128 * 4) + ((((qty - 1) * 0.06) + 0.085) * 2)) + 0.99;
-          SCH10Pipe_2 = ((((qty * 0.06) + 0.125) + 0.17 + 0.05) * 2) + 2.68;
-          thkCoverplate_1 = (((qty - 1) * 0.06) + 0.085 + 0.1 + 0.03) + 1.28;
-          thkCoverplate_2 = 0.35 + 0.35 + 0.1;
-        } else if (Model == "SUS227") {
-          thickboxpipe5050 = ((((qty - 1) * 0.06) + 0.085) * 8 + (1.15 * 6) + (2.075 * 4) + (0.15 * 8));
-          thickboxpipe10050 = ((0.128 * 4) + ((((qty - 1) * 0.06) + 0.085) * 2)) + 0.99;
-          SCH10Pipe_2 = ((((qty * 0.06) + 0.125) + 0.17 + 0.05) * 2) + 2.88;
-          thkCoverplate_1 = (((qty - 1) * 0.06) + 0.085 + 0.1 + 0.03) + 1.28;
-          thkCoverplate_2 = 0.35 + 0.35 + 0.1;
-        } else if (Model == "SUS313") {
-          thickboxpipe5050 = ((((qty - 1) * 0.06) + 0.085) * 8 + (1.15 * 6) + (2.575 * 4) + (0.15 * 8));
-          thickboxpipe10050 = ((0.128 * 4) + ((((qty - 1) * 0.06) + 0.085) * 2)) + 0.99;
-          SCH10Pipe_2 = ((((qty * 0.06) + 0.125) + 0.17 + 0.05) * 2) + 3.38;
-          thkCoverplate_1 = (((qty - 1) * 0.06) + 0.085 + 0.1 + 0.03) + 1.28;
-          thkCoverplate_2 = 0.35 + 0.35 + 0.1;
-        }
       }
       const pipeDouble = qty * 2;
       const porforatedPipe = (qty + 1) * 2;
       const nippleQty = (pipeDouble + porforatedPipe);
-      const ThreadedNipple4 = nippleQty / 2;
 
       //result table
       const resultsTable = document.getElementById('resultsTable');
@@ -284,23 +237,29 @@
             <img src="bluefox-logo-with-tagline.png" alt="" class="logo" style="float: right; margin:10px;">
             <b>BLUFOX ECOVENTURES LLP </b>
             <br >www.blufoxmembranes.com
+            <br> Site / Project Name : ${document.getElementById("sitename").value}
           </th>
         </tr>
         <tr>
-          <th>Material SS 304 unpolished</th>
+          <th>Material SS 304 unpolished (Order Calculation Sheet)</th>
           <th colspan="2">Value</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>12.5 m&sup2 Membrane Frame Qty.</td>
+          <td>Membrane Model</td>
+          <td>${Model}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Membrane Qty.</td>
           <td>${qty}</td>
           <td>Nos.</td>
         </tr>
         <tr>
-          <td>1/2" Nipple Qty</td>
+          <td>1/2" Nipple Qty - 2" long</td>
           <td>${nippleQty}</td>
-          <td>m/h</td>
+          <td>Nos.</td>
         </tr>
         <tr id="thick50" ></tr>
         <tr>
@@ -308,21 +267,15 @@
           <td>${parseFloat(thickBoxpipe).toFixed(2)}</td>
           <td> mtr</td>
         </tr>
-        <tr>
-          <td>1/2" threaded Nipple 4" Long</td>
-          <td>${parseFloat(ThreadedNipple4).toFixed(2)}</td>
-          <td>Nos.</td>
+        <tr id=threadedNipple>
         </tr>
-        <tr>
-          <td>1" Threaded Nipple 6"  Long</td>
-          <td>${ThreadedNipple6}</td>
-          <td>Nos.</td>
+        <tr id="Flange">
         </tr>
         <tr>
           <td colspan=3>
             <span style="font-weight: 700;color:red;">NOTE :</span> <br>
-            UP TO 6 MEMBRANE YOU WILL GET 1" THREADED NIPPLE (6" LONG) = 1 NOS.
-            <br> ABOVE 6 MEMBRANE YOU WILL GET 1" THREADED NIPPLE (6" LONG) = 2 NOS.</td>
+           Order 1/2" Nipple 4" long = 2" long - 2 Nos. <br>
+          Order 1.5" Pipe 6" long = 3" long - 2 Nos.</td>
         </tr>
       </tbody>
     </table>     
@@ -330,93 +283,37 @@
 
       document.getElementById("thick50").style.display = "none";
       if (thickBoxpipe50 != 0) {
-        console.log("before thickBoxpipe50", thickBoxpipe50);
         document.getElementById("thick50").style.display = "table-row";
         document.getElementById("thick50").innerHTML = `<td>50mm x 50mm x 2mm thick Box Pipe</td> <td>${parseFloat(thickBoxpipe50).toFixed(2)}</td> <td>mtr</td>`;
         console.log("thick50", thick50);
       }
 
-      if (MembraneType == "SUS") {
-        document.getElementById("resultsTable").innerHTML =`
-        <thead  id="resultsTablehead">
-        <tr>
-          <th colspan="3" style="background-color:rgb(203,237,252); text-align: left; color:black; font-weight: 400;">
-            <img src="bluefox-logo-with-tagline.png" alt="" class="logo" style="float: right; margin:10px;">
-            <b>BLUFOX ECOVENTURES LLP </b>
-            <br >www.blufoxmembranes.com
-          </th>
-        </tr>
-        <tr>
-          <th>Material SS 304 unpolished</th>
-          <th colspan="2">Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>12.5 m&sup2 Membrane Frame Qty.</td>
-          <td>${qty}</td>
-          <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>${qty <= 10 ? "40mm x 40mm x 2mm Thick Box Pipe " : "50mm x 50mm x 2mm Thick Box Pipe"}</td>
-          <td>${parseFloat(thickboxpipe5050).toFixed(2)}</td>
-          <td> mtr</td>
-        </tr>
-        <tr>
-          <td>${qty <= 10 ? "80mm x 40mm x 2mm Thick Box Pipe " : "100mm x 50mm x 2mm Thick Box Pipe"}</td>
-          <td>${parseFloat(thickboxpipe10050).toFixed(2)}</td>
-          <td> mtr</td>
-        </tr>
-        <tr>
-          <td>40mm x 15mm x 2mm Thick Box Pipe</td>
-          <td>${parseFloat(thickboxpipe4015).toFixed(2)}</td>
-          <td> mtr</td>
-        </tr>
-        <tr>
-          <td>50mm x 25mm x 2mm Thick Box Pipe</td>
-          <td>${parseFloat(thickboxpipe5025).toFixed(2)}</td>
-          <td> mtr</td>
-        </tr>
-        <tr>
-          <td>3/4" Threaded COUPLING 4" Long</td>
-          <td>${parseFloat(threadedCoupling4_3by4).toFixed(2)}</td>
-          <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>3/4" SCH 10 PIPE</td>
-          <td>${parseFloat(SCH10Pipe_3by4).toFixed(2)}</td>
-          <td>mtr</td>
-        </tr>
-        <tr>
-          <td>3/4"  SCH 10  90 DEG. LR ELBOW</td>
-          <td>${parseFloat(SCH1090Deg_3by4).toFixed(2)}</td>
-          <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>1.5" FLANGE</td>
-          <td>${Number(Flange_2) + Flange_3}</td>
-          <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>1.5" SCH 10 PIPE</td>
-          <td>${parseFloat(SCH10Pipe_2 + SCH10Pipe_3).toFixed(2) }</td>
-          <td>mtr</td>
-        </tr>
-        <tr>
-          <td>1.5" SCH 10 90 DEG. ELBOW</td>
-          <td>${SCH1090Deg_2}</td>
-          <td>Nos.</td>
-        </tr>
-        <tr>
-          <td>2 THK. COVER PLATE</td>
-          <td>${parseFloat(thkCoverplate_1).toFixed(2)}  x  ${parseFloat(thkCoverplate_2).toFixed(2)}</td>
-          <td>1 Nos.</td>
-        </tr>
-        </tbody>
-      </table>
-        `
+      ThreadedNipple = document.getElementById("threadedNipple");
+      ThreadedNipple.style.display  = "table-row";
+
+      Flange = document.getElementById("Flange");
+Flange.style.display = "table-row";
+
+      if(Pipe == "40mm"){
+ThreadedNipple.innerHTML = `<td>1" Threaded Nipple (3" long)</td> <td> 1 </td> <td> Nos.</td>`;
+Flange.innerHTML = `<td>1" Flange</td> <td> 2 </td> <td> Nos.</td>`;
+      }else if(Pipe == "50mm"){
+        ThreadedNipple.innerHTML = `<td>1.5" Threaded Nipple (3" long)</td> <td> 1 </td> <td> Nos.</td>`;
+        Flange.innerHTML = `<td>1.5" Flange</td> <td> 4 </td> <td> Nos.</td>`;
       }
+
+
+
+
+
+
+      // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
     }
+
   </script>
   <!-- navbar end -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

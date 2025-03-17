@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Skid calculation</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator for Skid</title>
+    <link rel="stylesheet" href="projection.css" />
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="for extra use.jpg" />
+    <style>
+        table tr td {
+            border-collapse: collapse;
+            border: 1px solid grey;
+        }
+
+        table td:first-of-type {
+            width: 50%;
+        }
+
+        table td:not(:first-child) {
+            width: 25%;
+        }
+
+        select {
+            width: 70%;
+            padding: 2px;
+            margin-left: 10px;
+            font-size: 14px !important;
+            border-radius: 5px;
+            border: 1px solid rgb(129, 161, 219);
+        }
+
+        .radio {
+            width: 33%;
+            padding: 0px 5px;
+            border: 1px solid rgb(129, 161, 219);
+            border-radius: 5px;
+            margin: 5px 10px;
+        }
+
+        .radio label {
+            width: 85%
+        }
+
+        .fields {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <div id="nav-placeholder"></div>
+    <script>
+        // Function to load the navbar
+        function loadNavbar() {
+            fetch('navbar.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('nav-placeholder').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+        // Load the navbar when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', loadNavbar);
+    </script>
+    <!-- navbar End -->
+
+    <div class="maincontainer">
+        <div id="innercontainer">
+            <h3 class="topHeading">BF Series(Double Frame) Skid Calculation</h3>
+
+            <!-- ------------Enter container container------- -->
+            <form id="projectionForm">
+
+                <div class="form-group">
+                    <label>Membrane Type</label>
+                    <select name="MembraneType" id="MembraneType" required onchange="redirectFunction()">
+                        <option value="BF" selected>BF Series</option>
+                        <option value="SUS">SUS Series</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Model">Select Model</label>
+                    <select id="Model" required>
+                        <option value="BF125">BF 125</option>
+                        <option value="BF200">BF 200</option>
+                        <option value="BF300">BF 300</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Membrane QTY. (Nos.)</label>
+                    <input type="text" oninput="this.value = this.value.replace(/[^\d.]/g, '')" id="qty" class="qty"
+                        required />
+                </div>
+
+                <div class="form-group">
+                    <label>Site / Project Name (Optional)</label>
+                    <input type="text" id="sitename" class="sitename" required />
+                </div>
+
+                <!-- SUBMIT BUTTON  -->
+                <button type="button" onclick="calculateResults()" style="margin-bottom:40px;">Submit</button>
+                <!-- ------------Result container------- -->
+                <table>
+                    <tbody id="resultsTable">
+                        <!-- Dynamic rows will be added here -->
+                    </tbody>
+                </table>
+                <!-- PRINT BUTTON -->
+                <div class="btns">
+                    <button id="print-btn" onclick="window.print()" style="margin-top:40px; margin:40px 40% 0px 40%">Print
+                        Table</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+
+        function redirectFunction() {
+            const MembraneType = document.getElementById("MembraneType").value;
+            if (MembraneType == "SUS") {
+                window.location.href = "calcskidDoubleSUS.html";
+            } else if (MembraneType == "BF") {
+                window.location.href = "calcSkidDouble.html";
+            }
+        }
+        function calculateResults() {
+
+            let qty = document.getElementById("qty").value;
+            qty = Number(qty);
+            const MembraneType = document.getElementById("MembraneType").value;
+            const Model = document.getElementById("Model").value;
+
+            const pipeDouble = qty * 2;
+            const porforatedPipe = (qty + 1) * 2;
+            const nippleQty = (pipeDouble + porforatedPipe);
+
+            const pipe80mm = (((qty + 1) * 0.085)) * 2;
+            let pipe50mm;
+            let pipe40mm;
+
+            if (Model == "BF125") {
+                pipe50mm = ((1.2 * 4) + (1.3 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
+                pipe40mm = ((1.2 * 2) + ((qty + 1) * 2) + 0.6);
+            } else if (Model == "BF200") {
+                pipe50mm = ((1.72 * 4) + (1.3 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
+                pipe40mm = ((1.72 * 2) + ((qty + 1) * 2) + 0.6);
+            } else if (Model == "BF300") {
+                pipe50mm = ((2.22 * 4) + (1.3 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
+                pipe40mm = ((2.22 * 2) + ((qty + 1) * 2) + 0.6);
+            }
+
+            document.getElementById("resultsTable").innerHTML = `
+        <thead  id="resultsTablehead">
+        <tr>
+          <th colspan="3" style="background-color:rgb(203,237,252); text-align: left; color:black; font-weight: 400;">
+            <img src="bluefox-logo-with-tagline.png" alt="" class="logo" style="float: right; margin:10px;">
+            <b>BLUFOX ECOVENTURES LLP </b>
+            <br >www.blufoxmembranes.com
+              <br> Site / Project Name : ${document.getElementById("sitename").value}
+          </th>
+        </tr>
+        <tr>
+          <th>Material SS 304 unpolished (Order Calculation Sheet)</th>
+          <th colspan="2">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Membrane Model</td>
+          <td>${Model}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Membrane Qty.</td>
+          <td>${qty}</td>
+          <td>Nos.</td>
+        </tr>
+        <tr>
+          <td>1/2" Nipple qty</td>
+          <td>${nippleQty}</td>
+          <td>Nos.</td>
+        </tr>
+        <tr>
+          <td>80mm x 40mm x 2mm thick box pipe</td>
+          <td>${parseFloat(pipe80mm).toFixed(2)}</td>
+          <td>mtr</td>
+        </tr>
+        <tr>
+          <td>50mm x 50mm x 2mm thick box pipe</td>
+          <td>${parseFloat(pipe50mm).toFixed(2)}</td>
+          <td>mtr</td>
+        </tr>
+        <tr>
+          <td>40mm x 40mm x 2mm thick box pipe</td>
+          <td>${parseFloat(pipe40mm).toFixed(2)}</td>
+          <td>mtr</td>
+        </tr>
+        <tr>
+          <td>1.5" Threaded Nipple (3" long)</td>
+          <td>1</td>
+          <td>Nos.</td>
+        </tr>
+        <tr>
+          <td>1.5" Flange</td>
+          <td>4</td>
+          <td>Nos.</td>
+        </tr>
+         <tr>
+          <td>2" Threaded Nipple (4" long)</td>
+          <td>1</td>
+          <td>Nos.</td>
+        </tr>
+        <tr>
+          <td>2" Flange</td>
+          <td>2</td>
+          <td>Nos.</td>
+        </tr>
+        </tbody>
+      </table>
+        `
+        }
+    </script>
+</body>
+
+</html>
