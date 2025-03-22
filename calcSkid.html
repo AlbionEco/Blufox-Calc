@@ -98,6 +98,9 @@
             <option value="BF125">BF 125</option>
             <option value="BF200">BF 200</option>
             <option value="BF300">BF 300</option>
+            <option value="BF100N">BF 100N</option>
+            <option value="BF200N">BF 200N</option>
+            <option value="BF100oxy">BF 100 oxy</option>
           </select>
         </div>
 
@@ -180,8 +183,6 @@
       console.log("Model", Model);
       console.log("MembraneType", MembraneType);
       let ThreadedNipple6 = 1;
-
-     
      
     
 
@@ -207,12 +208,17 @@
             thickBoxpipe = ((1.72 * 4) + (0.61 * 6) + (((qty + 1) * 0.085) + 0.08) * 8);
           } else if (Model == "BF300") {
             thickBoxpipe = ((2.22 * 4) + (0.61 * 6) + (((qty + 1) * 0.085) + 0.08) * 8);
+          } else if (Model == "BF100N") {
+            thickBoxpipe = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085) + 0.08) * 6);
+          } else if (Model == "BF100oxy") {
+            thickBoxpipe = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085) + 0.08) * 6);
+          }else if (Model == "BF200N") {
+            thickBoxpipe = ((1.72 * 4) + (0.61 * 6) + (((qty + 1) * 0.085) + 0.08) * 8);
           }
         } else if (Pipe == "50mm") {
           if (Model == "BF125") {
             thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
             thickBoxpipe50 = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
-
           } else if (Model == "BF200") {
             thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
             thickBoxpipe50 = ((1.72 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
@@ -220,6 +226,16 @@
           } else if (Model == "BF300") {
             thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
             thickBoxpipe50 = ((2.22 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
+            ThreadedNipple6 = 2;
+          } else  if (Model == "BF100N") {
+            thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
+            thickBoxpipe50 = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
+          } else  if (Model == "BF100oxy") {
+            thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
+            thickBoxpipe50 = ((1.2 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
+          }else if (Model == "BF200N") {
+            thickBoxpipe = ((0.61 * 2) + (((qty + 1) * 0.085)) * 2);
+            thickBoxpipe50 = ((1.72 * 4) + (0.61 * 6) + (((qty + 1) * 0.085)) * 6) + 0.5;
             ThreadedNipple6 = 2;
           }
         }
@@ -257,7 +273,7 @@
           <td>Nos.</td>
         </tr>
         <tr>
-          <td>1/2" Nipple Qty - 2" long</td>
+          <td>1/2" Nipple Qty (2" long)</td>
           <td>${nippleQty}</td>
           <td>Nos.</td>
         </tr>
@@ -295,11 +311,24 @@
 Flange.style.display = "table-row";
 
       if(Pipe == "40mm"){
-ThreadedNipple.innerHTML = `<td>1" Threaded Nipple (3" long)</td> <td> 1 </td> <td> Nos.</td>`;
-Flange.innerHTML = `<td>1" Flange</td> <td> 2 </td> <td> Nos.</td>`;
+        if(qty < 10){
+          ThreadedNipple.innerHTML = `<td>1" Threaded Nipple (3" long)</td> <td> 2 </td> <td> Nos.</td>`;
+          Flange.innerHTML = `<td>1" Flange</td> <td> 2 </td> <td> Nos.</td>`;
+        }
+        else{
+          ThreadedNipple.innerHTML = `<td>1" Threaded Nipple (3" long)</td> <td> 4 </td> <td> Nos.</td>`;
+          Flange.innerHTML = `<td>1" Flange</td> <td> 2 </td> <td> Nos.</td>`;
+        }
       }else if(Pipe == "50mm"){
-        ThreadedNipple.innerHTML = `<td>1.5" Threaded Nipple (3" long)</td> <td> 1 </td> <td> Nos.</td>`;
+        if(qty < 10){
+          ThreadedNipple.innerHTML = `<td>1.5" Threaded Nipple (3" long)</td> <td> 2 </td> <td> Nos.</td>`;
+          Flange.innerHTML = `<td>1.5" Flange</td> <td> 4 </td> <td> Nos.</td>`;
+        }
+        else{
+          ThreadedNipple.innerHTML = `<td>1.5" Threaded Nipple (3" long)</td> <td> 4 </td> <td> Nos.</td>`;
         Flange.innerHTML = `<td>1.5" Flange</td> <td> 4 </td> <td> Nos.</td>`;
+        }
+        
       }
 
 
