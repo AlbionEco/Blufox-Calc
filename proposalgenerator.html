@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Generator</title>
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="proposalgenerator.css">
+    <link rel="icon" type="image/png" href="for extra use.jpg" />
+
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+
+</head>
+
+<body>
+    <!-- navbar -->
+    <div id="nav-placeholder"></div>
+    <script>
+        // Function to load the navbar
+        function loadNavbar() {
+            fetch('navbar.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('nav-placeholder').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+        // Load the navbar when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', loadNavbar);
+    </script>
+    <!-- navbar end -->
+
+    <div class="maincontainer">
+        <div id="innercontainer">
+            <h3 class="topHeading">Proposal Generator</h3>
+            <!-- Proposal Form -->
+            <form id="proposalForm">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="quotation_Number">Quotation Number:</label>
+                        <input type="text" id="quotation_Number" placeholder="QTN-2025-XXXX" value="QTN-2025-">
+                    </div>
+                    <div class="form-group">
+                        <label for="client_Name">Client Name:</label>
+                        <textarea type="text" id="client_Name" value="" placeholder="XYZ Pvt. Ltd."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date">
+                    </div>
+                    <div class="form-group">
+                        <label for="special_Terms">Specific Terms:</label>
+                        <textarea type="text" id="special_Terms" value=""></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="module">Select Membrane Module:</label>
+                        <select id="module" required>
+                            <option value="BF100">BF100</option>
+                            <option value="BF125">BF125</option>
+                            <option value="BF200">BF200</option>
+                            <option value="BF300">BF300</option>
+                            <option value="BF100N">BF100N</option>
+                            <option value="BF150N">BF150N</option>
+                            <option value="BF200N">BF200N</option>
+                            <option value="BF100oxy">BF100oxy</option>
+                            <option value="BF200oxy">BF200oxy</option>
+                            <option value="BF220oxy">BF220oxy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flowRate">Design average daily flow rate (KLD):</label>
+                        <input type="text" id="flowRate" placeholder="Enter Flow Rate" required value=""
+                            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label for="flux">Design Flux (LMH):</label>
+                        <input type="text" id="flux" placeholder="Enter Flux" required value=""
+                            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label for="noOfTrain">Number of Skid/Train:</label>
+                        <input type="text" id="noOfTrain" placeholder="Enter no of Train" required value=""
+                            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label for="noOfMembraneTank">Number of Membrane Tank:</label>
+                        <input type="text" id="noOfMembraneTank" placeholder="Enter no of Membrane Tank" required
+                            value="" oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label for="workingHr">Working Hours:</label>
+                        <input type="text" id="workingHr" placeholder="Enter workingHr" value="20" required
+                            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label for="membraneQty">Membrane Quantity</label>
+                        <input type="number" id="membraneQty" value="">
+                    </div>
+                    <!-- offer price -->
+                    <div class="form-group">
+                        <label for="offer_Price">Offer Price (Rs. / Module):</label>
+                        <input type="text" id="offer_Price" placeholder="Enter Offer Price" value="" required
+                            oninput="this.value = this.value.replace(/[^\d.]/g, '')">
+                    </div>
+                    <!-- Authorized person who generate proposal -->
+                    <div class="form-group">
+                        <label for="authorized_Person">Authorized Person:</label>
+                        <input type="text" id="authorized_Person" placeholder="Name Surname">
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button type="button" id="generateBtn">Generate Proposal PDF</button>
+                </div>
+            </form>
+        </div>
+
+
+
+
+
+
+
+
+        <!-- Import Logic -->
+        <script>
+
+            //set membrane quantity on change of noOfMembraneTank
+            document.getElementById('flux').oninput = function () { myFunction() };
+            document.getElementById('flowRate').oninput = function () { myFunction() };
+            document.getElementById('module').oninput = function () { myFunction() };
+            document.getElementById('workingHr').oninput = function () { myFunction() };
+            document.getElementById('flux').onchange = function () { myFunction() };
+            document.getElementById('flowRate').onchange = function () { myFunction() };
+            document.getElementById('module').onchange = function () { myFunction() };
+            document.getElementById('workingHr').onchange = function () { myFunction() };
+            const module = document.getElementById('module').value;
+            const flowRate = parseFloat(document.getElementById('flowRate').value) || 0;
+            const flux = parseFloat(document.getElementById('flux').value) || 0;
+            const workingHr = document.getElementById('workingHr').value;
+            let membraneSurfaceAreaPerMBR = 0;
+            // Perform calculations based on formulas
+            if (module == "BF100N" | module == "BF100oxy" | module == "BF100") {
+                membraneSurfaceAreaPerMBR = 10;
+            } else if (module == "BF150N") {
+                membraneSurfaceAreaPerMBR = 15;
+            } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
+                membraneSurfaceAreaPerMBR = 20;
+            } else if (module == "BF125") {
+                membraneSurfaceAreaPerMBR = 12.5;
+            } else if (module == "BF300") {
+                membraneSurfaceAreaPerMBR = 30;
+            } else if (module == "BF220oxy") {
+                membraneSurfaceAreaPerMBR = 22;
+            }
+            const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
+
+            //on change set the value of membraneQty into input field
+            function myFunction() {
+                const module = document.getElementById('module').value;
+                const flowRate = parseFloat(document.getElementById('flowRate').value) || 0;
+                const flux = parseFloat(document.getElementById('flux').value) || 0;
+                const workingHr = document.getElementById('workingHr').value;
+                let membraneSurfaceAreaPerMBR = 0;
+                // Perform calculations based on formulas
+                if (module == "BF100N" | module == "BF100oxy" | module == "BF100") {
+                membraneSurfaceAreaPerMBR = 10;
+            } else if (module == "BF150N") {
+                membraneSurfaceAreaPerMBR = 15;
+            } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
+                membraneSurfaceAreaPerMBR = 20;
+            } else if (module == "BF125") {
+                membraneSurfaceAreaPerMBR = 12.5;
+            } else if (module == "BF300") {
+                membraneSurfaceAreaPerMBR = 30;
+        } else if (module == "BF220oxy") {
+                membraneSurfaceAreaPerMBR = 22;
+            }
+                console.log("inside function");
+                const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
+
+                document.getElementById('membraneQty').value = TotalNumberOfModule;
+            }
+
+
+
+            // Function to format today's date to the required 
+            function getTodayDateString() {
+                const today = new Date();
+                const localDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000));
+
+                const day = String(localDate.getDate()).padStart(2, '0');
+                const month = String(localDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const year = localDate.getFullYear();
+
+                return `${day}-${month}-${year}`;
+            }
+
+
+            // Set the value of the input field
+            document.getElementById('date').value = getTodayDateString();
+
+
+
+            function loadImage(url) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = "Anonymous"; // Allows loading from some external sources if needed
+                    img.src = url;
+
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        // Convert to JPEG data URL
+                        resolve(canvas.toDataURL('image/jpeg'));
+                    };
+
+                    img.onerror = () => {
+                        console.error(`Failed to load image at: ${url}`);
+                        // If image fails, return a grey placeholder so PDF doesn't crash
+                        resolve(createPlaceholderImage(200, 200, 200));
+                    };
+                });
+            }
+            /**
+             * Creates a solid color image base64 string for Model visual
+             */
+            function createPlaceholderImage(r, g, b) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 300;
+                const ctx = canvas.getContext('2d');
+
+                // Background
+                ctx.fillStyle = `rgb(${r},${g},${b})`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Text
+                ctx.fillStyle = 'white';
+                ctx.font = '30px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Model Image', canvas.width / 2, canvas.height / 2);
+
+                return canvas.toDataURL('image/jpeg');
+            }
+
+            // --- Main Logic ---
+
+            document.getElementById('generateBtn').addEventListener('click', async function () {
+                const btn = this;
+                btn.textContent = 'Generating...';
+                btn.disabled = true;
+
+                try {
+                    // 1. Get Form Inputs
+                    const quotation_Number = document.getElementById('quotation_Number').value;
+                    const client_Name = document.getElementById('client_Name').value;
+                    const date = document.getElementById('date').value;
+                    const special_Terms = document.getElementById('special_Terms').value;
+                    const module = document.getElementById('module').value;
+                    const flowRate = parseFloat(document.getElementById('flowRate').value) || 0;
+                    const noOfTrain = parseFloat(document.getElementById('noOfTrain').value) || 0;
+                    const flux = parseFloat(document.getElementById('flux').value) || 0;
+                    const noOfMembraneTank = parseFloat(document.getElementById('noOfMembraneTank').value) || 0;
+                    const workingHr = document.getElementById('workingHr').value;
+                    const offer_Price = parseFloat(document.getElementById('offer_Price').value) || 0;
+                    const authorized_Person = document.getElementById('authorized_Person').value;
+
+                    //  Initialize Variables for Calculation & PDF Content
+                    let membraneSurfaceAreaPerMBR = 0;
+                    // Perform calculations based on formulas
+                    if (module == "BF100N" | module == "BF100oxy" | module == "BF100") {
+                membraneSurfaceAreaPerMBR = 10;
+            } else if (module == "BF150N") {
+                membraneSurfaceAreaPerMBR = 15;
+            } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
+                membraneSurfaceAreaPerMBR = 20;
+            } else if (module == "BF125") {
+                membraneSurfaceAreaPerMBR = 12.5;
+            } else if (module == "BF300") {
+                membraneSurfaceAreaPerMBR = 30;
+        } else if (module == "BF220oxy") {
+                membraneSurfaceAreaPerMBR = 22;
+            }
+
+                    const effectiveFlowRate = flowRate / 20 //hr;
+                    const perTrainFlowRate = parseFloat(effectiveFlowRate / noOfTrain).toFixed(2);
+                    const RasPumpFlow = parseFloat((flowRate / 24) * 3).toFixed(1);
+                    const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
+                    const NoofModulePerTrain = Math.ceil(TotalNumberOfModule / noOfTrain);
+                    const MembraneSurfaceAreaPerTrain = NoofModulePerTrain * membraneSurfaceAreaPerMBR
+                    const TotalMembraneSurfaceArea = parseFloat(TotalNumberOfModule * membraneSurfaceAreaPerMBR).toFixed(1);
+                    const OperatingFlux = parseFloat(flux * 0.0238).toFixed(1);
+                    const rawTimeFlux = parseFloat(flux * 83.34 / 100).toFixed(1);
+                    const Timeflux = parseFloat(rawTimeFlux * 0.0238).toFixed(1);
+
+
+
+
+
+
+
+                    let length = 0;
+                    let width = 0;
+                    let height = 0;
+                    let effectiveWaterDepth = 0;
+                    let width2 = 0;
+                    let surfaceareapertrain = 0;
+
+                    if (module == "BF100") {
+                        length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+                        width = 700 / 1000;
+                        height = 1300 / 1000;
+                        effectiveWaterDepth = 1.6;
+                        width2 = 2.3;
+                        surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+                    } else if (module == "BF100N" | module == "BF125" | module == "BF100oxy") {
+                        length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+                        width = 700 / 1000;
+                        height = 1300 / 1000;
+                        effectiveWaterDepth = 1.6;
+                        width2 = 2.3;
+                        surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+                    } else if (module == "BF150N" | module == "BF200" | module == "BF200oxy") {
+                        length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+                        width = 700 / 1000;
+                        height = 1800 / 1000;
+                        effectiveWaterDepth = 2.1;
+                        width2 = 3;
+                        surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+                    } else if (module == "BF200N" | module == "BF300") {
+                        length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+                        width = 700 / 1000;
+                        height = 2300 / 1000;
+                        effectiveWaterDepth = 2.7;
+                        width2 = 4;
+                        surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+                    } else if (module == "BF220oxy") {
+                        length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+                        width = 700 / 1000;
+                        height = 2355 / 1000;
+                        effectiveWaterDepth = 2.77;
+                        width2 = 4;
+                        surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+                    }
+                    const TotalMembraneTankVolume = parseFloat(noOfTrain * surfaceareapertrain).toFixed(1);
+                    const lengthinsidepertank = parseFloat(TotalMembraneTankVolume / effectiveWaterDepth / width2).toFixed(1);
+                    const RequiredTotalFlowrateforpeakflux = parseFloat(flowRate / workingHr).toFixed(1);
+                    const filteration = 8;
+
+                    const backwash = 1;
+                    const RequiredBackwashFlowRate = parseFloat(RequiredTotalFlowrateforpeakflux * 1.5).toFixed(1);
+                    let RequiredtotalAirFlowRate = 0;
+                    if (module.substring(0, 2) == "BF") {
+                        RequiredtotalAirFlowRate = parseFloat((TotalMembraneSurfaceArea * 0.3)).toFixed(1);
+                    }
+                    const RequiredtotalAirFlowRatepereach = parseFloat((RequiredtotalAirFlowRate / noOfTrain)).toFixed(1);
+                    const requiredAirBlowerDischargePressure = parseFloat(effectiveWaterDepth * 1.675).toFixed(1);
+                    const BackwashNacloConcentration = 20;
+                    const backwashRequiredChemicalSolutionVolume = 100;
+                    const backwashRequiredChemicalQuantity = parseFloat(((((RequiredBackwashFlowRate * 1000 / 60) * 24) * 20 / 1000000) / 0.1)).toFixed(1);
+                    const CebNacloConcentration = 500;
+                    const CebRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+                    const CebRequiredChemicalQuantityeachTime = parseFloat((CebRequiredChemicalSolutionVolume * Number(CebNacloConcentration) / 1000000) / 0.1).toFixed(1);
+                    const CebChemicalSolutionInjectionTime = 20;
+                    const CebChemicalInjectionFlowrate = parseFloat(CebRequiredChemicalSolutionVolume / CebChemicalSolutionInjectionTime).toFixed(1);
+                    const CipNacloConcentration = 3000;
+                    const CipRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+                    const CipRequiredChemicalQuantityeachTime = parseFloat((CipRequiredChemicalSolutionVolume * Number(CipNacloConcentration) / 1000000) / 0.1).toFixed(1);
+                    const CipChemicalSolutionInjectionTime = 20;
+                    const CipChemicalInjectionFlowrate = parseFloat(CipRequiredChemicalSolutionVolume / CipChemicalSolutionInjectionTime).toFixed(1);
+                    const acidConcentration = 10000;
+                    const acidRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+                    const acidRequiredChemicalQuantityeachTime = parseFloat((acidRequiredChemicalSolutionVolume * Number(acidConcentration) / 1000000) / 0.3).toFixed(1);
+                    const acidChemicalSolutionInjectionTime = 20;
+                    const acidChemicalInjectionFlowrate = parseFloat(acidRequiredChemicalSolutionVolume / acidChemicalSolutionInjectionTime).toFixed(1);
+                    const CebAcidConcentration = 300;
+                    const CebacidRequiredChemicalSolutionVolume = TotalMembraneSurfaceArea * 2;
+                    const CebacidRequiredChemicalQuantityeachTime = parseFloat((CebacidRequiredChemicalSolutionVolume * Number(CebAcidConcentration) / 1000000) / 0.3).toFixed(1);
+                    const CebAcidChemicalSolutionInjectionTime = 20;
+                    const CebAcidChemicalInjectionFlowrate = parseFloat(CebacidRequiredChemicalSolutionVolume / CebAcidChemicalSolutionInjectionTime).toFixed(1);
+
+
+
+                    let ModuleSize = "";
+
+                    if (module == "BF100" | module == "BF100N" | module == "BF125" | module == "BF100oxy") {
+                        ModuleSize = "1000 x 534 x 46"
+                    } else if (module == "BF150N" | module == "BF200" | module == "BF200oxy") {
+                        ModuleSize = "1500 x 534 x 46"
+                    } else if (module == "BF200N" | module == "BF300") {
+                        ModuleSize = "2000 x 534 x 46"
+                    } else if (module == "BF220oxy") {
+                        ModuleSize = "2055 x 534 x 46"
+                    }
+
+
+                    //  Load Images (Async)
+                    // CHANGE THE FILE NAMES BELOW TO MATCH YOUR IMAGES
+                    const headerImgData = await loadImage('Images for Proposal/header.png');
+                    const footerImgData = await loadImage('Images for Proposal/footer.png');
+
+
+                    // 6. Generate PDF
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    const pageWidth = doc.internal.pageSize.width;
+                    const pageHeight = doc.internal.pageSize.height;
+
+                    // Define dimensions for Header and Footer
+                    const headerHeight = 25;
+                    const footerHeight = 25;
+
+                    // Function to Apply Header/Footer to a specific page
+                    const applyHeaderFooter = () => {
+                        // Header
+                        doc.addImage(headerImgData, 'JPEG', 0, 0, pageWidth, headerHeight);
+                        // Footer
+                        doc.addImage(footerImgData, 'JPEG', 0, pageHeight - footerHeight, pageWidth, footerHeight);
+                    };
+
+                    //setting date in dd-mm-yyyy format
+                    function formatToDDMMYYYY(dateString) {
+                        const [year, month, day] = dateString.split("-");
+                        return `${day}-${month}-${year}`;
+                    }
+                    const formattedDate = formatToDDMMYYYY(date);
+
+
+
+
+
+
+
+                    // --- Content Generation ---
+
+                    // NOTE: We start content Y position *below* the header height
+
+                    // ---------------------------------Page 1 ---------------------------------
+                    let currentY = headerHeight + 25;
+
+                    // Ref and To section
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Ref: ", 25, currentY);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(`${quotation_Number}`, 33, currentY);
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Date: ", pageWidth - 80, currentY);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(formattedDate, pageWidth - 68, currentY);
+                    currentY += 6; //41 total
+
+                    //add blockheight for To section
+                    doc.setFont("helvetica", "bold");
+                    doc.text("To:", 25, currentY);
+                    doc.setFont("helvetica", "normal");
+                    const clientLines = doc.splitTextToSize(client_Name, 160);
+                    doc.text(clientLines, 33, currentY);
+                    const blockHeight = clientLines.length * 5;
+                    //what is 6 here?
+                    currentY += blockHeight; //41 + blockheight total
+                    currentY += 10; //55 total
+
+                    // heading proposal
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Proposal:", 25, currentY);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(`Blufox®  ${flowRate}KLD - MBR Membranes`, 47, currentY);
+                    //doc.text(`Proposal: Blufox®  ${flowRate}KLD - MBR Membranes`, 25, currentY);
+                    currentY += 10; //65 total
+
+                    // Image Section
+                    var img = new Image()
+                    img.src = 'Images for Proposal/MembraneImage1.png'
+                    doc.addImage(img, 'png', 40, currentY, 140, 100);
+                    currentY += 120; //190 total
+
+                    //features section
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Features', 25, currentY);
+                    currentY += 5; //195 total
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const features = [
+                        '• High hydrophilic PVDF membrane',
+                        '• Reinforced hollow fiber membrane',
+                        '• Reduced treatment plant footprint',
+                        '• Long membrane service life',
+                        '• Consistent and stable flux performance',
+                        '• Easy to Energysaving due to low operating pressure',
+                    ];
+                    features.forEach(feature => {
+                        currentY += 5;
+                        doc.text(feature, 30, currentY);
+                    });
+
+
+
+                    // -----------------------------------------------Page 2 ---------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+
+                    currentY = headerHeight + 25;
+                    //Heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Product Features', 25, currentY);
+                    currentY += 10; //45 total
+
+
+
+                    // Bullet Point 1 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Excellent Performance:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText1 = "The Performance of R-PVDF is 10 times better than materials like PES or PS.";
+                    const textWidth1 = 160;
+                    const textLines1 = doc.splitTextToSize(longText1, textWidth1);
+                    const blockHeight1 = textLines1.length * 5;
+                    doc.text(longText1, 30, currentY, {
+                        maxWidth: textWidth1,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight1 + 5;
+
+
+
+
+                    // Bullet Point 2 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  High Strength:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText2 = "We adopt the independently developed patent process, which is of higher membrane tensile strength and compressive strength. The tensile resistance can reach 200kg+ and the fiber break age ratio is less than 3%. The Inner Potting material use for holding Fibers is PU with combine of epoxy resin, which gives hollow fiber superior strength in aeration mode.";
+                    const textWidth2 = 160;
+                    const textLines2 = doc.splitTextToSize(longText2, textWidth2);
+                    const blockHeight2 = textLines2.length * 5;
+                    doc.text(longText2, 30, currentY, {
+                        maxWidth: textWidth2,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight2 + 5;
+
+
+                    // Bullet Point 3 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Permanent Hydrophilic Membrane:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText3 = "Based on patent technology, special hydrophilization processing is applied on RPVDF so as to enable a stronger hydrophilic on membrane filaments and still keep its original superior characteristics. Design of the membranes eliminate the dead pockets which results in reduce the bio fouling of the membranes in long term.";
+                    const textWidth3 = 160;
+                    const textLines3 = doc.splitTextToSize(longText3, textWidth3);
+                    const blockHeight3 = textLines3.length * 5;
+                    doc.text(longText3, 30, currentY, {
+                        maxWidth: textWidth3,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight3 + 5;
+
+                    // Bullet Point 4 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Internationally Advanced Membrane Micro-structure:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText4 = "The sponge-like structure consists of a surface layer of 0.03 - 0.06 micrometers cerebral cortex, with which membrane processes stronger tolerance to run-through, thus ensuring the safety of water outlet.";
+                    const textWidth4 = 160;
+                    const textLines4 = doc.splitTextToSize(longText4, textWidth4);
+                    const blockHeight4 = textLines4.length * 5;
+                    doc.text(longText4, 30, currentY, {
+                        maxWidth: textWidth4,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight4 + 5;
+
+
+                    // Bullet Point 5 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  High Peeling Strength', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText5 = "The membrane won the peeled off even after 1million back-flush.";
+                    const textWidth5 = 160;
+                    const textLines5 = doc.splitTextToSize(longText5, textWidth5);
+                    const blockHeight5 = textLines5.length * 5;
+                    doc.text(longText5, 30, currentY, {
+                        maxWidth: textWidth5,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight5 + 5;
+
+                    // Bullet Point 6 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Waste Water Optimization', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText6 = "Stable effluent quality, high resistance to water quality impact load test. Effluent suspended matter and turbidity are close to zero.";
+                    const textWidth6 = 160;
+                    const textLines6 = doc.splitTextToSize(longText6, textWidth6);
+                    const blockHeight6 = textLines6.length * 5;
+                    doc.text(longText6, 30, currentY, {
+                        maxWidth: textWidth6,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight6 + 5;
+
+                    // Bullet Point 7 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Waste Water Optimization', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText7 = "Stable effluent quality, high resistance to water quality impact load test. Effluent suspended matter and turbidity are close to zero.";
+                    const textWidth7 = 160;
+                    const textLines7 = doc.splitTextToSize(longText7, textWidth7);
+                    const blockHeight7 = textLines7.length * 5;
+                    doc.text(longText7, 30, currentY, {
+                        maxWidth: textWidth7,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight7 + 5;
+
+                    // Bullet Point 8 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Flexible Operational Control:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText8 = "The efficient interception of membrane intercepts microorganisms completely in the bioreactor, complete separation of HRT and SRT. Flexible operational control.";
+                    const textWidth8 = 160;
+                    const textLines8 = doc.splitTextToSize(longText8, textWidth8);
+                    const blockHeight8 = textLines8.length * 5;
+                    doc.text(longText8, 30, currentY, {
+                        maxWidth: textWidth8,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight8 + 5;
+
+                    // Bullet Point 9 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Reduce Land and Civil Construction Investment:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText9 = "The concentration of MBR tank’s activate sludge is around 8,000 – 12,000 mg/l, which both spares the room for sedimentation tank and minimizes land occupation and construction investment. The occupied area is about 1/3 of the traditional process.";
+                    const textWidth9 = 160;
+                    const textLines9 = doc.splitTextToSize(longText9, textWidth9);
+                    const blockHeight9 = textLines9.length * 5;
+                    doc.text(longText9, 30, currentY, {
+                        maxWidth: textWidth9,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight9 + 5;
+
+                    // ---------------------------------------Page 2 End -------------------------------------------------
+                    // ---------------------------------Page 3 Start ---------------------------------
+
+                    // 1. Force a new page
+                    doc.addPage();
+
+                    currentY = headerHeight + 25;
+
+                    // Bullet Point 10 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Reproduction of Nitro bacteria:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText10 = "High systematic nitrification efficiency is beneficial to the retention and reproduction of nitrobacteria. Deamination and de-phosphorization may also be realized if the mode of operation is changed.";
+                    const textWidth10 = 160;
+                    const textLines10 = doc.splitTextToSize(longText10, textWidth10);
+                    const blockHeight10 = textLines10.length * 5;
+                    doc.text(longText10, 30, currentY, {
+                        maxWidth: textWidth10,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight10 + 5;
+
+                    // Bullet Point 11 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Improve the Degradation Efficiency:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText11 = "The degradation efficiency of refractory organics can be enhanced greatly since the sludge age can be very long.";
+                    const textWidth11 = 160;
+                    const textLines11 = doc.splitTextToSize(longText11, textWidth11);
+                    const blockHeight11 = textLines11.length * 5;
+                    doc.text(longText11, 30, currentY, {
+                        maxWidth: textWidth11,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight11 + 5;
+
+                    // Bullet Point 12 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Can achieve Zero Sludge Discharge:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText12 = "Operated under high volumetric loading, low sludge loading, long sludge age, the reactor yields extremely low residual sludge. Due to the infinite sludge age, theoretically zero-release of sludge can be achieved.";
+                    const textWidth12 = 160;
+                    const textLines12 = doc.splitTextToSize(longText12, textWidth12);
+                    const blockHeight12 = textLines12.length * 5;
+                    doc.text(longText12, 30, currentY, {
+                        maxWidth: textWidth12,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight12 + 5;
+
+
+                    // Bullet Point 13 start----------------------------------
+                    // heading
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text('\u2022  Easy Operation and Management:', 30, currentY);
+
+                    // description
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longText13 = "PLC control of system brings a convenient operation and management process. Simple rack or frame design ensure ease of design as well as maintenance.";
+                    const textWidth13 = 160;
+                    const textLines13 = doc.splitTextToSize(longText13, textWidth13);
+                    const blockHeight13 = textLines13.length * 5;
+                    doc.text(longText13, 30, currentY, {
+                        maxWidth: textWidth13,
+                        align: "justify"
+                    });
+                    //  Move cursor down based on how many lines were drawn
+                    currentY += blockHeight13 + 5;
+
+
+
+                    //Heading
+                    currentY += 20;
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Process Description of MBR membranes: ', 25, currentY);
+                    currentY += 10;
+
+                    // description 1
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longTextProcessDescription1 = "MBR tank receives Effluent with the required MLSS after the aeration process. MBR tank consists of MBR membrane modules mounted on structural frame Air diffuser are provided. Below the membrane modules for air scouring";
+                    const textWidthProcessDescription1 = 160;
+                    const textLinesProcessDescription1 = doc.splitTextToSize(longTextProcessDescription1, textWidthProcessDescription1);
+                    const blockHeightProcessDescription1 = textLinesProcessDescription1.length * 5;
+                    doc.text(longTextProcessDescription1, 25, currentY, {
+                        maxWidth: textWidthProcessDescription1,
+                        align: "justify"
+                    });
+                    currentY += blockHeightProcessDescription1 + 5
+
+                    //description 2
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const longTextProcessDescription2 = "The filtration takes place by means of suction pump which delivers the treated water in the product water tank, a part of the treated water is collected in a overhead backwash water tank. After every 7-8 minutes of service cycle the membranes are subjected to relaxation of 60 seconds. Backwash takes place typically after every 8 Cycle for a period of 1 minutes. In this step, product water from the overhead backwash tank flows by Pump into the membrane module and dislodges the impurities from the membrane surface. Air scouring continues during filtration, rest and backwash period.";
+                    const textWidthProcessDescription2 = 160;
+                    const textLinesProcessDescription2 = doc.splitTextToSize(longTextProcessDescription2, textWidthProcessDescription2);
+                    doc.text(longTextProcessDescription2, 25, currentY, {
+                        maxWidth: textWidthProcessDescription2,
+                        align: "justify"
+                    });
+
+
+
+                    // ---------------------------------------Page 3 End -------------------------------------------------
+                    //-----------------------------------------Page 4 Start ---------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 20;
+
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Standard Operating Conditions:', 25, currentY);
+                    currentY += 5;
+
+                    //Table
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont("helvetica", "normal");
+
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [['Parameters', 'Unit', 'Range']],
+                        body: [
+                            ['Required MLSS', 'mg/lit', '6000-12000'],
+                            ['Permeate Water Flux', 'LMH', '10-30'],
+                            ['Air flow Required/Scouring', 'm2/m3/hr', '0.20-0.35'],
+                            ['Max. Trans Pressure (TMP)', 'mm/Hg (inHg.)', '500(-20)'],
+                            ['Back Wash Pressure', 'Kg/cm2', '1-1.5'],
+                            ['DO in MBR Basin', 'mg/l', '1-3'],
+                            ['MLVSS Ratio', '-', '80%'],
+                            ['Membrane PH tolerance', '-', '3-10'],
+                            ['Temperature', 'Degree', '10-40'],
+                            ['NaClo Tolerance', 'mg/lit (ppm)', '5000'],
+                        ],
+
+                        // TABLE WIDTH FIXED = 165mm
+                        tableWidth: 165,
+                        margin: { left: 25 },
+                        theme: 'grid',
+
+                        // HEADER STYLE – BOLD
+                        headStyles: { fillColor: [169, 169, 169], fontStyle: 'bold', halign: 'left' },
+
+                        // BODY STYLE – NORMAL + LEFT ALIGN
+                        styles: { fontStyle: 'normal', halign: 'left', textColor: 0 },
+
+                        // ALTERNATE ROW COLORS   // light gray
+                        alternateRowStyles: { fillColor: [240, 240, 240] },
+                        // White row
+                        bodyStyles: { fillColor: [255, 255, 255] },
+                    });
+
+
+
+                    // UPDATED finalY
+                    currentY = doc.lastAutoTable.finalY + 5;
+
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    doc.text("** Kindly remove Fat, Oil, Grease to protect membranes from fouling and choking, use 1-2mm size fine screen in aeration tank feed line to reduce the heavy TSS stuck to the membranes surface during suction.", 25, currentY, { maxWidth: 165, align: "justify" });
+
+                    //auto table
+
+                    currentY += 25;
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(200, 0, 0);
+doc.text(`${module}`,25, currentY);
+currentX = 25 + doc.getTextWidth(`${module}`);
+doc.setTextColor(0, 0, 139);
+doc.text(` - Membrane Specification`, currentX, currentY);
+                    //doc.text(`${module} - Membrane Specification`, 25, currentY);
+                    
+
+
+                    //Table
+                    currentY += 5;
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont("helvetica", "normal");
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [['Items', 'Unit']],
+                        body: [
+                            ['Material of Fiber', 'Reinforced PVDF with PET Layer Support'],
+                            ['Element Header', 'ABS resin (Heavy Duty)'],
+                            ['Pore size', '0.03-0.06 Micron (outside - in) '],
+                            ['Fiber Size (OD/ID)', '2.0mm / 0.9mm'],
+                            ['Surface Area (MBR)', `${membraneSurfaceAreaPerMBR} m2/module`],
+                            ['Operation Pressure', '2.95 to17.71 inHg (minus)'],
+                            ['Backwash Pressure ', 'Max 0.2 MPa'],
+                            ['Backwash Time ', '30~120 sec.'],
+                            ['Turbidity outlet', '<1 NTU'],
+                            ['Element Dimension', `${ModuleSize} mm (Drawing as below)`],
+                        ],
+
+                        // TABLE WIDTH FIXED = 165mm
+                        tableWidth: 165,
+                        margin: { left: 25 },
+                        theme: 'grid',
+
+                        // HEADER STYLE – BOLD
+                        headStyles: { fillColor: [169, 169, 169], fontStyle: 'bolditalic', halign: 'left' },
+
+                        // BODY STYLE – NORMAL + LEFT ALIGN
+                        styles: { fontStyle: 'normal', halign: 'left', textColor: 0 },
+
+                        // ALTERNATE ROW COLORS   // light gray
+                        alternateRowStyles: { fillColor: [240, 240, 240] },
+                        // White row
+                        bodyStyles: { fillColor: [255, 255, 255] },
+                    });
+                    currentY = doc.lastAutoTable.finalY + 5;
+
+
+
+
+                    // ---------------------------------------Page 4 End -------------------------------------------------
+                    //-----------------------------------------Page 5 Start ---------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 20;
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Typical P&ID', 25, currentY);
+                    currentY += 5; //45 total
+                    // Image Section
+                    var img2 = new Image()
+                    //img2.src = 'MembraneP&ID.png'
+                    img2.src = 'Images for Proposal/MembraneP&ID.jpg'
+                    doc.addImage(img2, 'png', 20, currentY, 180, 215);
+                    // ---------------------------------------Page 5 End -------------------------------------------------
+                    // ---------------------------------------Page 6 Start -------------------------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 20;
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('MBR Membranes GA Drawing', 25, currentY);
+                    currentY += 5; //45 total
+                    // Image Section
+                    var img3 = new Image()
+                    img3.src = 'Images for Proposal/MembraneGADrawing.png'
+                    doc.addImage(img3, 'png', 25, currentY, 180, 200);
+                    // ---------------------------------------Page 6 End -------------------------------------------------
+                    //----------------------------------------Page 7 Start -----------------------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 20;
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Offer Parameter', 25, currentY);
+                    currentY += 5; //45 total
+                    //Table
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont("helvetica", "normal");
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [['Parameters', 'Unit', 'Range']],
+                        body: [
+                            ['Flow Rate of the system', 'KLD', `${flowRate}`],
+                            ['Effective flow Rate (Considering loss of relax & Backwash)', 'm3/hr', `${effectiveFlowRate.toFixed(2)}`],
+                            ['Design Frame/Train Qty', 'Nos', `${noOfTrain}`],
+                            ['Per Frame/Train Flow Rate ', 'm3/hr', `${perTrainFlowRate}`],
+                            ['Design Flux (Avg.)', 'LMH', `${flux}`],
+                            ['Total MBR Module Required(BLUFOX®)', 'Nos', `${TotalNumberOfModule}`],
+                            ['Per Frame MBR Module Required', 'No.', `${NoofModulePerTrain}`],
+                            ['Per Frame MBR Module Surface Area', 'm2', `${MembraneSurfaceAreaPerTrain}`],
+                            ['Total MBR Membrane Surface Area', 'm2', `${TotalMembraneSurfaceArea}`],
+                            ['Total MBR Air Required', 'm3/hr', `${RequiredtotalAirFlowRate}`],
+                            ['MBR Frame/Train Size (Each)', 'L x W x H mm', `${(length * 1000)} x ${((width) * 1000)} x ${(height * 1000)}`],
+                            ['MBR Frame MOC', '-', `SS304`],
+                            ['MBR Tank Volume Required (Approx.)', 'm3', `${TotalMembraneTankVolume}`],
+                            ['Permeate Pump Flow @ 12-13m Head', 'm3/hr', `${RequiredTotalFlowrateforpeakflux}`],
+                            ['Back Wash Pump Flow @ 10m Head ', 'm3/hr', `${RequiredBackwashFlowRate}`],
+                            ['RAS Pump Flow @ 15m Head ', 'm3/hr', `${RasPumpFlow}`],
+                        ],
+
+                        // TABLE WIDTH FIXED = 165mm
+                        tableWidth: 165,
+                        margin: { left: 25 },
+                        theme: 'grid',
+
+                        // HEADER STYLE – BOLD
+                        headStyles: { fillColor: [169, 169, 169], fontStyle: 'bold', halign: 'left' },
+
+                        // BODY STYLE – NORMAL + LEFT ALIGN
+                        styles: { fontStyle: 'normal', halign: 'left', textColor: 0 },
+
+                        // ALTERNATE ROW COLORS   // light gray
+                        alternateRowStyles: { fillColor: [240, 240, 240] },
+                        // White row
+                        bodyStyles: { fillColor: [255, 255, 255] },
+                    });
+                    currentY = doc.lastAutoTable.finalY + 5;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text("Note:", 25, currentY);
+                    currentY += 2;
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    doc.text("1. Vertical Distance between the water level in the MBR tank and back wash tank shall not be more than 0.7mtr", 30, currentY + 5, { maxWidth: 165, align: "justify" });
+                    doc.text("2. Maintain the water level 300-500mm above the MBR frame / Module.", 30, currentY + 15, { maxWidth: 165, align: "justify" });
+
+                    // ---------------------------------------Page 7 End -------------------------------------------------
+                    //----------------------------------------Page 8 Start -----------------------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 15;
+
+
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('MBR Working Cycle Programming:', 25, currentY);
+                    currentY += 5; //45 total
+                    //Image
+                    var img4 = new Image()
+                    img4.src = 'Images for Proposal/MBR working cycle programming.png'
+                    doc.addImage(img4, 'png', 25, currentY, 160, 30);
+
+
+                    currentY += 40;
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Step Chart Pump and Valve Condition:', 25, currentY);
+                    currentY += 5; //45 total
+                    //Table
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont("helvetica", "normal");
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [['Step', 'Permeate Pump', 'Backwash Pump', 'Produced Water Valve', 'Backwash Valve', 'Air Inlet Valve', 'Citric Dosing Pump', 'NaClO Dosing Pump']],
+                        body: [
+                            ['Permeate', 'Open', ' ', 'Open', ' ', 'Open', ' ', ' '],
+                            ['Backwash', ' ', 'Open', ' ', 'Open', 'Open', ' ', ' '],
+                            ['CEB NaClO', ' ', 'Open', ' ', 'Open', 'Open', ' ', 'Open'],
+                            ['CEB Citric Acid', ' ', 'Open', ' ', 'Open', 'Open', 'Open', ' '],
+                        ],
+
+                        // TABLE WIDTH FIXED = 165mm
+                        tableWidth: 165,
+                        margin: { left: 25 },
+                        theme: 'grid',
+
+                        // HEADER STYLE – BOLD
+                        // header style fill color white and font color sky blue
+
+
+                        headStyles: { fillColor: [255, 255, 255], textColor: [0, 191, 255], fontStyle: 'bold', halign: 'center', lineColor: [204, 204, 204], lineWidth: 0.1 },
+
+                        // BODY STYLE – NORMAL + LEFT ALIGN
+                        styles: { fontStyle: 'normal', halign: 'center', textColor: 0 },
+                    });
+
+                    currentY = doc.lastAutoTable.finalY + 5;
+
+                    currentY += 15;
+                    //heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Commercial Offer:', 25, currentY);
+                    currentY += 5; //45 total
+                    //Table
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont("helvetica", "normal");
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [['No.', 'Item', 'Qty.', 'Total Price (Rs.)']],
+                        body: [
+                            ['1.', `Blufox - MBR Membranes
+Plant Capacity: ${flowRate} KLD 
+with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumberOfModule).toLocaleString('en-IN')}/-`],
+                            ['', '', 'Total Price (Rs.)', `${(offer_Price * TotalNumberOfModule).toLocaleString('en-IN')}/-`],
+                        ],
+
+                        // TABLE WIDTH FIXED = 165mm
+                        tableWidth: 165,
+                        margin: { left: 25 },
+                        theme: 'grid',
+
+                        // HEADER STYLE – BOLD
+                        headStyles: { fillColor: [169, 169, 169], fontStyle: 'bold', halign: 'center' },
+
+                        // BODY STYLE – NORMAL + LEFT ALIGN
+                        styles: { fontStyle: 'normal', halign: 'left', textColor: 0 },
+
+                        //second and third colum align center with bold text
+                        didParseCell: function (data) {
+                            if (data.column.index === 2 || data.column.index === 3) {
+                                data.cell.styles.halign = 'center';
+                                data.cell.styles.fontStyle = 'bold';
+                            }
+                        },
+                    });
+                    currentY = doc.lastAutoTable.finalY + 5;
+
+                    currentY += 10;
+                    //Heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Scope of Supply:', 25, currentY);
+                    currentY += 5;
+                    // description 1
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    doc.text("\u2022  Supply of Membranes Module / only membranes.", 30, currentY, { maxWidth: 165, align: "justify" });
+                    currentY += 5;
+                    doc.text("\u2022  Supply P&ID", 30, currentY, { maxWidth: 165, align: "justify" });
+                    currentY += 5;
+                    doc.text("\u2022  Operation Manual", 30, currentY, { maxWidth: 165, align: "justify" });
+                    currentY += 15;
+
+                    //Heading
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Exclusion:', 25, currentY);
+                    currentY += 5;
+                    // description 1
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    doc.text("\u2022  Pre-treatment, Biological, Post Treatment", 30, currentY, { maxWidth: 165, align: "justify" });
+                    currentY += 5;
+                    doc.text("\u2022  Control Panel & Instruments.", 30, currentY, { maxWidth: 165, align: "justify" });
+                    currentY += 5;
+                    doc.text("\u2022  Pumps, Blowers, Lifting system etc.", 30, currentY, { maxWidth: 165, align: "justify" });
+                    currentY += 5;
+
+                    // ---------------------------------------Page 8 End -------------------------------------------------
+                    //----------------------------------------Page 9 Start -----------------------------------------------
+
+                    //----------------------------------------Page 9 Start -----------------------------------------------
+
+                    // --- HELPER CONFIGURATION ---
+                    const contentStartX = 25;
+                    const textWidth = 165;
+                    const lineHeight = 5; // Approx height per line (adjust based on font size)
+                    const pageBottomLimit = pageHeight - footerHeight - 10; // Buffer space before footer
+
+                    // Function to handle Page Breaks
+                    function checkPageBreak(requiredSpace) {
+                        if (currentY + requiredSpace > pageBottomLimit) {
+                            doc.addPage();
+                            currentY = headerHeight + 15; // Reset Y position for new page
+
+                            // IMPORTANT: CALL YOUR HEADER & FOOTER FUNCTION HERE
+                            // Example: addHeader(doc); addFooter(doc);
+                            // If you don't have a function, paste your Header/Footer image logic here.
+                        }
+                    }
+
+                    // 1. Force a new page for the start of this section
+                    doc.addPage();
+                    currentY = headerHeight + 15;
+
+                    // --- PAYMENT TERMS HEADING ---
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    checkPageBreak(10); // Check if heading fits
+                    doc.text('Payment Terms and Conditions:', contentStartX, currentY);
+                    currentY += 7;
+
+                    // --- TERMS BULLET POINTS ---
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+
+                    const termsConditions = [
+                        "1)  Above Prices ex. work only.",
+                        "2)  GST 18 % will be extra.",
+                        "3)  Freight & Packing will be charges extra as actual.",
+                        "4)  Payment 50% Advance and 50% before delivery.",
+                        "5)  Offer Validity 30 days from offer date.",
+                        "6)  Installation under client scope only.",
+                        "7)  Delivery 15-60 days of Purchase Order along with advance payment.",
+                        "8)  Membrane Warranty will be one year against manufacturing defect only.",
+                        "9)  Client has to submit the feed water data, Process flow diagram, P&ID, Programming cycle design before commissioning of the plant, if client wants to understand the CEB / CIP process, supplier can provide video training support to client.",
+                        "10) Any other terms and conditions will be as per Blufox standard terms and conditions."
+                    ];
+
+                    termsConditions.forEach(term => {
+                        // 1. Split text to know exactly how many lines it occupies
+                        let lines = doc.splitTextToSize(term, textWidth);
+                        let blockHeight = lines.length * lineHeight;
+
+                        // 2. Check if this specific bullet point fits
+                        checkPageBreak(blockHeight);
+
+                        // 3. Print the text
+                        doc.text(lines, 30, currentY); // Indented slightly (30 instead of 25)
+
+                        // 4. Update Y
+                        currentY += blockHeight + 2; // +2 for gap between bullets
+                    });
+
+                    currentY += 10; // Gap before Special Terms
+
+                    // --- SPECIAL TERMS (Dynamic Length) ---
+                    if (special_Terms && special_Terms.trim() !== "") {
+
+                        // Heading
+                        doc.setFontSize(14);
+                        doc.setFont("helvetica", "bolditalic");
+                        doc.setTextColor(0, 0, 139);
+                        checkPageBreak(15);
+                        doc.text('Special Terms and Conditions:', contentStartX, currentY);
+                        currentY += 7;
+
+                        // Content
+                        doc.setFontSize(11);
+                        doc.setFont("helvetica", "normal");
+                        doc.setTextColor(0);
+
+                        // Split the massive text block into individual lines based on width
+                        const specialLines = doc.splitTextToSize(special_Terms, textWidth);
+
+                        // Loop through EVERY line. This allows the text to break across pages gracefully.
+                        specialLines.forEach(line => {
+                            checkPageBreak(lineHeight); // Check if 1 line fits
+                            doc.text(line, contentStartX, currentY);
+                            currentY += lineHeight;
+                        });
+
+                        currentY += 10; // Gap after special terms
+                    }
+
+                    // --- SIGNATURE SECTION ---
+                    // Calculate total height needed for signature block (Heading + Name + Company)
+                    // Approx height: Heading(6) + Space(8) + Name(6) + Space(8) + Company(6) ~= 35
+                    const signatureBlockHeight = 40;
+
+                    checkPageBreak(signatureBlockHeight);
+
+                    // 1. Heading
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Authorized Signatory', contentStartX, currentY);
+                    currentY += 8;
+
+                    // 2. Name
+                    doc.text(`${authorized_Person}`, contentStartX, currentY);
+                    currentY += 8;
+
+                    // 3. Company Name
+                    doc.text('Blufox Ecoventures LLP.', contentStartX, currentY);
+                    currentY += 15;
+
+
+                    // --- IMAGES SECTION ---
+                    // Images height is 50, plus some padding.
+                    const imagesHeight = 55;
+
+                    checkPageBreak(imagesHeight);
+
+                    try {
+                        // Image 1
+                        var img5 = new Image();
+                        img5.src = 'Images for Proposal/Blufox Extra Image 1.png';
+                        doc.addImage(img5, 'png', 20, currentY, 50, 50);
+
+                        // Image 2
+                        var img6 = new Image();
+                        img6.src = 'Images for Proposal/Blufox Extra Image 2.png';
+                        doc.addImage(img6, 'png', 80, currentY, 50, 50);
+
+                        // Image 3
+                        var img7 = new Image();
+                        img7.src = 'Images for Proposal/Blufox Extra Image 3.png';
+                        doc.addImage(img7, 'png', 145, currentY, 50, 50);
+
+                        // Advance Y after images
+                        currentY += 55;
+                    } catch (e) {
+                        console.error("Error adding images: ", e);
+                    }
+
+                    //----------------------------------------Page 9 End -----------------------------------------------
+
+
+
+
+
+
+
+                    // --- Final Pass: Add Header and Footer to ALL Pages ---
+                    const totalPages = doc.getNumberOfPages();
+                    for (let i = 1; i <= totalPages; i++) {
+                        doc.setPage(i);
+                        applyHeaderFooter();
+                    }
+
+                    // Save PDF
+                    doc.save(`Proposal_${quotation_Number}.pdf`);
+
+                } catch (e) {
+                    console.error(e);
+                    alert('Error generating PDF: ' + e.message);
+                } finally {
+                    btn.textContent = 'Generate Proposal PDF';
+                    btn.disabled = false;
+                }
+            });
+
+        </script>
+
+
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+</body>
+
+</html>
