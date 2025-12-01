@@ -178,18 +178,18 @@
                 let membraneSurfaceAreaPerMBR = 0;
                 // Perform calculations based on formulas
                 if (module == "BF100N" | module == "BF100oxy" | module == "BF100") {
-                membraneSurfaceAreaPerMBR = 10;
-            } else if (module == "BF150N") {
-                membraneSurfaceAreaPerMBR = 15;
-            } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
-                membraneSurfaceAreaPerMBR = 20;
-            } else if (module == "BF125") {
-                membraneSurfaceAreaPerMBR = 12.5;
-            } else if (module == "BF300") {
-                membraneSurfaceAreaPerMBR = 30;
-        } else if (module == "BF220oxy") {
-                membraneSurfaceAreaPerMBR = 22;
-            }
+                    membraneSurfaceAreaPerMBR = 10;
+                } else if (module == "BF150N") {
+                    membraneSurfaceAreaPerMBR = 15;
+                } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
+                    membraneSurfaceAreaPerMBR = 20;
+                } else if (module == "BF125") {
+                    membraneSurfaceAreaPerMBR = 12.5;
+                } else if (module == "BF300") {
+                    membraneSurfaceAreaPerMBR = 30;
+                } else if (module == "BF220oxy") {
+                    membraneSurfaceAreaPerMBR = 22;
+                }
                 console.log("inside function");
                 const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
 
@@ -288,18 +288,18 @@
                     let membraneSurfaceAreaPerMBR = 0;
                     // Perform calculations based on formulas
                     if (module == "BF100N" | module == "BF100oxy" | module == "BF100") {
-                membraneSurfaceAreaPerMBR = 10;
-            } else if (module == "BF150N") {
-                membraneSurfaceAreaPerMBR = 15;
-            } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
-                membraneSurfaceAreaPerMBR = 20;
-            } else if (module == "BF125") {
-                membraneSurfaceAreaPerMBR = 12.5;
-            } else if (module == "BF300") {
-                membraneSurfaceAreaPerMBR = 30;
-        } else if (module == "BF220oxy") {
-                membraneSurfaceAreaPerMBR = 22;
-            }
+                        membraneSurfaceAreaPerMBR = 10;
+                    } else if (module == "BF150N") {
+                        membraneSurfaceAreaPerMBR = 15;
+                    } else if (module == "BF200N" | module == "BF200oxy" | module == "BF200") {
+                        membraneSurfaceAreaPerMBR = 20;
+                    } else if (module == "BF125") {
+                        membraneSurfaceAreaPerMBR = 12.5;
+                    } else if (module == "BF300") {
+                        membraneSurfaceAreaPerMBR = 30;
+                    } else if (module == "BF220oxy") {
+                        membraneSurfaceAreaPerMBR = 22;
+                    }
 
                     const effectiveFlowRate = flowRate / 20 //hr;
                     const perTrainFlowRate = parseFloat(effectiveFlowRate / noOfTrain).toFixed(2);
@@ -956,12 +956,12 @@
                     doc.setFontSize(14);
                     doc.setFont("helvetica", "bolditalic");
                     doc.setTextColor(200, 0, 0);
-doc.text(`${module}`,25, currentY);
-currentX = 25 + doc.getTextWidth(`${module}`);
-doc.setTextColor(0, 0, 139);
-doc.text(` - Membrane Specification`, currentX, currentY);
+                    doc.text(`${module}`, 25, currentY);
+                    currentX = 25 + doc.getTextWidth(`${module}`);
+                    doc.setTextColor(0, 0, 139);
+                    doc.text(` - Membrane Specification`, currentX, currentY);
                     //doc.text(`${module} - Membrane Specification`, 25, currentY);
-                    
+
 
 
                     //Table
@@ -1108,8 +1108,122 @@ doc.text(` - Membrane Specification`, currentX, currentY);
                     doc.addPage();
                     currentY = headerHeight + 15;
 
+                    // -------------------- MAIN HEADING --------------------
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0);
+                    doc.text("MBR Feed Limiting Conditions", 105, currentY, { align: "center" });
 
-                    //heading
+                    currentY += 6;
+
+                    // -------------------- SUB TEXT --------------------
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(
+                        "Customer must ensure the feeding limits for MBR tank shall be as per the below table. In case the MBR feed limits are not meeting as per the below section, it may lead to Membrane damage / failure for which Supplier shall not be responsible.",
+                        15,
+                        currentY,
+                        { maxWidth: 180, align: "justify" }
+                    );
+
+                    currentY += 15;
+
+                    // -------------------- TABLE DATA --------------------
+
+                    const tableHead = [
+                        ["#", "Parameter", "Design Value", "Accepted Operating Range", "Units"]
+                    ];
+
+                    const tableBody = [
+                        [1, "Membrane tank MLSS concentration", "10000", "8,000-12,000", "mg/L"],
+                        [2, "Bioreactor MLSS", "8000", "6,000-10,000", "mg/L"],
+                        [3, "Bioreactor MLVSS concentration", "75", ">70", "%MLSS"],
+                        [4, "Dissolved oxygen concentration", "2", "1.5-3.0", "mg/L"],
+                        [5, "pH of mixed liquor in membrane tanks", "7", "6.5-8.0", "-"],
+                        [6, "Total SRT in Bioreactor", "NA", "15-20", "days"],
+                        [7, "Soluble cBOD5 in mixed liquor entering membrane tanks", "<5", "≤10", "mg/L"],
+                        [8, "NH3-N in mixed liquor entering membrane tanks", "0.5", "≤1", "mg/L"],
+                        [9, "Soluble COD", "<50", "<50", "mg/L"],
+                        [10, "Total Hardness (as CaCO3)", "-", "Not Scaling", "-"],
+                        [11, "Soluble Alkalinity (as CaCO3)", "100", "50-150", "mg/L"],
+                        [12, "Colloidal TOC (cTOC) concentration (Note 1)", "7", "≤10", "mg/L"],
+                        [13, "Total time to filter (TTF) (Note 2)", "100", "200", "s"],
+                        [14, "Mixed liquor recirculation from MBR -> Bioreactor (Note 3)", "4", "4 ± 10%", "4Q"],
+                        [15, "Trash/Solids >2mm", "0", "≤2", "mg/L"],
+                        [16, "Fats, Oil & Grease (FOG)", "<10 mg/L emulsified oil", "<10 mg/L mineral/non-biodegradable oil", "mg/L"],
+                        [17, "Mixed Liquor Temperature", "25", "25-35", "°C"]
+                    ];
+
+                    doc.autoTable({
+                        startY: currentY,
+                        head: tableHead,
+                        body: tableBody,
+                        theme: "grid",
+                        tableWidth: 180,
+                        margin: { left: 15 },
+                        headStyles: {
+                            fillColor: [41, 128, 185],
+                            textColor: [255, 255, 255],
+                            fontStyle: "bold",
+                            halign: "center"
+                        },
+                        styles: {
+                            fontSize: 11,
+                            cellPadding: 2,
+                            valign: "middle",
+                            halign: "left"
+                        },
+                        alternateRowStyles: {
+                            fillColor: [245, 245, 245] // light gray
+                        }
+                    });
+
+                    currentY = doc.lastAutoTable.finalY + 8;
+
+                    // ---------------------------------------Page 8 End -------------------------------------------------
+                    //----------------------------------------Page 9 Start -----------------------------------------------
+
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 20;
+
+                    // -------------------- NOTES SECTION --------------------
+
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("NOTES:", 25, currentY);
+
+                    currentY += 7;
+
+                    const notes = [
+                        " Colloidal TOC (cTOC) is the difference between the TOC measured in the filtrate passing through a 1.5 µm filter paper and the TOC measured in the Blufox permeate. TOC measurement shall follow standard water testing methods.",
+                        " Per Seller's Time To Filter (TTF) procedure (available upon request).",
+                        " Assuming a MLSS recirculation ratio of 3Q (Pump configuration). Customer to confirm.",
+                        " Chemicals incompatible with BLUFOX PVDF membranes must not enter MBR tank (compatibility list available).",
+                        " Biological & membrane process designed for 25-35°C. Avoid >38°C.",
+                        " TDS of treated water <3000 ppm. Chlorides <1500 ppm. Sulphates <700 ppm.",
+                        " Oil & Grease must not exceed 10 mg/L (emulsified) with no free oil.",
+                        " Adequate alkalinity must be maintained for biological performance; chemical dosing may be required."
+                    ];
+
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+
+                    // notes.forEach((note) => {
+                    //     const lines = doc.splitTextToSize(note, 160);
+                    //     doc.text(lines, 25, currentY, { align: "justify" });
+                    //     currentY += lines.length * 6; // proper spacing
+                    // });
+                    notes.forEach((note, i) => {
+    const numberedText = `${i + 1}. ${note}`;
+    const lines = doc.splitTextToSize(numberedText, 160);
+    doc.text(lines, 25, currentY, { maxWidth: 160, align: "justify" });
+    currentY += lines.length * 6;
+});
+
+                    currentY += 15;
+
+                     //heading
                     doc.setFontSize(14);
                     doc.setFont("helvetica", "bolditalic");
                     doc.setTextColor(0, 0, 139);
@@ -1159,7 +1273,14 @@ doc.text(` - Membrane Specification`, currentX, currentY);
 
                     currentY = doc.lastAutoTable.finalY + 5;
 
-                    currentY += 15;
+                    // ---------------------------------------Page 9 End -------------------------------------------------
+                    //----------------------------------------Page 10 Start -----------------------------------------------
+                    // 1. Force a new page
+                    doc.addPage();
+                    currentY = headerHeight + 20;
+
+                   
+                    //currentY += 15;
                     //heading
                     doc.setFontSize(14);
                     doc.setFont("helvetica", "bolditalic");
@@ -1234,18 +1355,58 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
                     doc.text("\u2022  Control Panel & Instruments.", 30, currentY, { maxWidth: 165, align: "justify" });
                     currentY += 5;
                     doc.text("\u2022  Pumps, Blowers, Lifting system etc.", 30, currentY, { maxWidth: 165, align: "justify" });
-                    currentY += 5;
+                    currentY += 20;
 
-                    // ---------------------------------------Page 8 End -------------------------------------------------
-                    //----------------------------------------Page 9 Start -----------------------------------------------
 
-                    //----------------------------------------Page 9 Start -----------------------------------------------
+// --- PAYMENT TERMS HEADING ---
+                    doc.setFontSize(14);
+                    doc.setFont("helvetica", "bolditalic");
+                    doc.setTextColor(0, 0, 139);
+                    doc.text('Payment Terms and Conditions:', 25, currentY);
+                    currentY += 7;
+
+                    // --- TERMS BULLET POINTS ---
+                    doc.setFontSize(11);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0);
+                    const termsConditions = [
+                        "1)  Above Prices ex. work only.",
+                        "2)  GST 18 % will be extra.",
+                        "3)  Freight & Packing will be charges extra as actual.",
+                        "4)  Payment 50% Advance and 50% before delivery.",
+                        "5)  Offer Validity 30 days from offer date.",
+                        "6)  Installation under client scope only.",
+                        "7)  Delivery 15-60 days of Purchase Order along with advance payment.",
+                        "8)  Membrane Warranty will be one year against manufacturing defect only.",
+                        "9)  Client has to submit the feed water data, Process flow diagram, P&ID, Programming cycle design before commissioning of the plant, if client wants to understand the CEB / CIP process, supplier can provide video training support to client.",
+                        "10) Any other terms and conditions will be as per Blufox standard terms and conditions."
+                    ];
+
+                    termsConditions.forEach(term => {
+                        // 1. Split text to know exactly how many lines it occupies
+                        let lines = doc.splitTextToSize(term, 165);
+                        let blockHeight = lines.length * 5;
+
+                        // 3. Print the text
+                        doc.text(lines, 30, currentY); // Indented slightly (30 instead of 25)
+
+                        // 4. Update Y
+                        currentY += blockHeight + 2; // +2 for gap between bullets
+                    });
+
+
+
+                    // ---------------------------------------Page 10 End -------------------------------------------------
+                    //----------------------------------------Page 11 Start -----------------------------------------------
+
 
                     // --- HELPER CONFIGURATION ---
                     const contentStartX = 25;
                     const textWidth = 165;
                     const lineHeight = 5; // Approx height per line (adjust based on font size)
                     const pageBottomLimit = pageHeight - footerHeight - 10; // Buffer space before footer
+
+
 
                     // Function to handle Page Breaks
                     function checkPageBreak(requiredSpace) {
@@ -1263,48 +1424,8 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
                     doc.addPage();
                     currentY = headerHeight + 15;
 
-                    // --- PAYMENT TERMS HEADING ---
-                    doc.setFontSize(14);
-                    doc.setFont("helvetica", "bolditalic");
-                    doc.setTextColor(0, 0, 139);
-                    checkPageBreak(10); // Check if heading fits
-                    doc.text('Payment Terms and Conditions:', contentStartX, currentY);
-                    currentY += 7;
-
-                    // --- TERMS BULLET POINTS ---
-                    doc.setFontSize(11);
-                    doc.setFont("helvetica", "normal");
-                    doc.setTextColor(0);
-
-                    const termsConditions = [
-                        "1)  Above Prices ex. work only.",
-                        "2)  GST 18 % will be extra.",
-                        "3)  Freight & Packing will be charges extra as actual.",
-                        "4)  Payment 50% Advance and 50% before delivery.",
-                        "5)  Offer Validity 30 days from offer date.",
-                        "6)  Installation under client scope only.",
-                        "7)  Delivery 15-60 days of Purchase Order along with advance payment.",
-                        "8)  Membrane Warranty will be one year against manufacturing defect only.",
-                        "9)  Client has to submit the feed water data, Process flow diagram, P&ID, Programming cycle design before commissioning of the plant, if client wants to understand the CEB / CIP process, supplier can provide video training support to client.",
-                        "10) Any other terms and conditions will be as per Blufox standard terms and conditions."
-                    ];
-
-                    termsConditions.forEach(term => {
-                        // 1. Split text to know exactly how many lines it occupies
-                        let lines = doc.splitTextToSize(term, textWidth);
-                        let blockHeight = lines.length * lineHeight;
-
-                        // 2. Check if this specific bullet point fits
-                        checkPageBreak(blockHeight);
-
-                        // 3. Print the text
-                        doc.text(lines, 30, currentY); // Indented slightly (30 instead of 25)
-
-                        // 4. Update Y
-                        currentY += blockHeight + 2; // +2 for gap between bullets
-                    });
-
-                    currentY += 10; // Gap before Special Terms
+                    
+                    //currentY += 10; // Gap before Special Terms
 
                     // --- SPECIAL TERMS (Dynamic Length) ---
                     if (special_Terms && special_Terms.trim() !== "") {
@@ -1386,7 +1507,7 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
                         console.error("Error adding images: ", e);
                     }
 
-                    //----------------------------------------Page 9 End -----------------------------------------------
+                    //----------------------------------------Page 11 End -----------------------------------------------
 
 
 
