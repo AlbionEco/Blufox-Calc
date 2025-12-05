@@ -143,8 +143,54 @@
             </form>
         </div>
 
+        <!-- Progress Modal -->
+        <div id="progressModal">
+            <div class="progress-modal-content">
+                <h3 id="progressText">Generating Proposal...</h3>
+                <div class="progress-container">
+                    <div id="progressBar" class="progress-bar" style="background-color: #4CAF50;">0%</div>
+                </div>
+            </div>
+        </div>
+
         <!-- SHARED UTILITIES -->
         <script>
+            // --- Progress Bar Functions ---
+            window.showProgressBar = function(message) {
+                const modal = document.getElementById('progressModal');
+                const text = document.getElementById('progressText');
+                const bar = document.getElementById('progressBar');
+                
+                if (modal && text && bar) {
+                    text.textContent = message || "Processing...";
+                    bar.style.width = '0%';
+                    bar.textContent = '0%';
+                    modal.style.display = 'flex';
+                }
+            };
+
+            window.updateProgressBar = async function(percent, message) {
+                const text = document.getElementById('progressText');
+                const bar = document.getElementById('progressBar');
+                
+                if (text && bar) {
+                    if (message) text.textContent = message;
+                    bar.style.width = percent + '%';
+                    bar.textContent = percent + '%';
+                }
+                // Yield to main thread to allow UI repaint
+                await new Promise(resolve => setTimeout(resolve, 10));
+            };
+
+            window.hideProgressBar = function() {
+                const modal = document.getElementById('progressModal');
+                if (modal) {
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 500); // Small delay to see 100%
+                }
+            };
+
             // Function to format today's date
             function getTodayDateString() {
                 const today = new Date();

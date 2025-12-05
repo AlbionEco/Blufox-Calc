@@ -11,7 +11,12 @@ async function generateSUSProposal(btn) {
     btn.textContent = 'Generating SUS PDF...';
     btn.disabled = true;
 
+    // Show progress bar
+    if (window.showProgressBar) window.showProgressBar("Initializing SUS Proposal PDF...");
+
     try {
+        if (window.updateProgressBar) await window.updateProgressBar(5, "Processing SUS Form Data...");
+        
         // 1. Get Form Inputs
         const quotation_Number = document.getElementById('quotation_Number').value;
         const client_Name = document.getElementById('client_Name').value;
@@ -177,11 +182,13 @@ async function generateSUSProposal(btn) {
 
         //  Load Images (Async)
         // CHANGE THE FILE NAMES BELOW TO MATCH YOUR IMAGES
+        if (window.updateProgressBar) await window.updateProgressBar(15, "Loading Assets...");
         const headerImgData = await loadImage('Images for Proposal/header.png');
         const footerImgData = await loadImage('Images for Proposal/footer.png');
 
 
         // 6. Generate PDF
+        if (window.updateProgressBar) await window.updateProgressBar(30, "Creating PDF Document...");
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
@@ -210,6 +217,7 @@ async function generateSUSProposal(btn) {
         // --- Content Generation ---
 
         // NOTE: We start content Y position *below* the header height
+        if (window.updateProgressBar) await window.updateProgressBar(40, "Generating Pages...");
 
         // ---------------------------------Page 1 ---------------------------------
         let currentY = headerHeight + 25;
@@ -278,7 +286,7 @@ async function generateSUSProposal(btn) {
         });
 
 
-
+        if (window.updateProgressBar) await window.updateProgressBar(50, "Generating Specs...");
         // -----------------------------------------------Page 2 ---------------------------------
         // 1. Force a new page
         doc.addPage();
@@ -937,6 +945,8 @@ async function generateSUSProposal(btn) {
 
         currentY = doc.lastAutoTable.finalY + 8;
 
+        if (window.updateProgressBar) await window.updateProgressBar(75, "Adding Notes & Commercials...");
+
         // ---------------------------------------Page 8 End -------------------------------------------------
         //----------------------------------------Page 9 Start -----------------------------------------------
 
@@ -1147,6 +1157,7 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
         });
 
 
+        if (window.updateProgressBar) await window.updateProgressBar(90, "Finalizing Document...");
 
         // ---------------------------------------Page 10 End -------------------------------------------------
         //----------------------------------------Page 11 Start -----------------------------------------------
@@ -1275,12 +1286,14 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
         }
 
         // Save PDF
+        if (window.updateProgressBar) await window.updateProgressBar(100, "Download Started!");
         doc.save(`Proposal_SUS_${quotation_Number}.pdf`);
 
     } catch (e) {
         console.error(e);
         alert('Error generating PDF: ' + e.message);
     } finally {
+        if (window.hideProgressBar) window.hideProgressBar();
         btn.textContent = 'Generate Proposal PDF';
         btn.disabled = false;
     }
@@ -1293,7 +1306,12 @@ async function generateSUSWordProposal(btn) {
     btn.textContent = 'Generating SUS Word Doc...';
     btn.disabled = true;
 
+    // Show progress bar
+    if (window.showProgressBar) window.showProgressBar("Initializing SUS Word Proposal...");
+
     try {
+        if (window.updateProgressBar) await window.updateProgressBar(5, "Processing SUS Data...");
+        
         // --- 1. Gather Data (Exact same logic as PDF) ---
         const quotation_Number = document.getElementById('quotation_Number').value;
         const client_Name = document.getElementById('client_Name').value;
@@ -1421,6 +1439,8 @@ async function generateSUSWordProposal(btn) {
         const formattedDate = formatToDDMMYYYY(date);
 
         // --- 2. Load Images & Convert to Uint8Array for docx ---
+        if (window.updateProgressBar) await window.updateProgressBar(20, "Loading Image Assets...");
+
         // Using existing helper `loadImage` then converting to ArrayBuffer
         const headerDataUrl = await loadImage('Images for Proposal/header.png');
         const footerDataUrl = await loadImage('Images for Proposal/footer.png');
@@ -1437,6 +1457,8 @@ async function generateSUSWordProposal(btn) {
         const cycleImgBuffer = base64ToUint8Array(cycleImgDataUrl);
 
         // --- 3. Construct Word Document ---
+        if (window.updateProgressBar) await window.updateProgressBar(40, "Building Document...");
+
         const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, WidthType, BorderStyle, Header, Footer, AlignmentType, PageBreak, VerticalAlign, HeightRule } = docx;
 
         // --- Helper for Tables ---
@@ -1588,6 +1610,7 @@ async function generateSUSWordProposal(btn) {
             ]
         });
 
+        if (window.updateProgressBar) await window.updateProgressBar(50, "Generating Content Pages...");
 
         // --- Page 1 Content ---
         const page1Children = [
@@ -1877,7 +1900,7 @@ async function generateSUSWordProposal(btn) {
                 verticalAlign: VerticalAlign.CENTER,
                 margins: { left: 100, right: 100 }
             })),
-            height: { value: 454, rule: HeightRule.AT_LEAST }
+            height: { value: 445, rule: HeightRule.AT_LEAST }
         }),
 
         // --- Data Row 1 ---
@@ -1927,7 +1950,7 @@ async function generateSUSWordProposal(btn) {
                     margins: { left: 100, right: 100 }
                 }),
             ],
-            height: { value: 454, rule: HeightRule.AT_LEAST }
+            height: { value: 445, rule: HeightRule.AT_LEAST }
         }),
 
         // --- Data Row 2 (Total) ---
@@ -1952,7 +1975,7 @@ async function generateSUSWordProposal(btn) {
                     margins: { left: 100, right: 100 }
                 }),
             ],
-            height: { value: 454, rule: HeightRule.AT_LEAST }
+            height: { value: 445, rule: HeightRule.AT_LEAST }
         })
     ]
 }),
@@ -2028,6 +2051,8 @@ async function generateSUSWordProposal(btn) {
         }
 
         // --- Assemble Document ---
+        if (window.updateProgressBar) await window.updateProgressBar(80, "Finalizing SUS Word Document...");
+
         const finalChildren = [
             ...page1Children,
             ...page2Children,
@@ -2089,13 +2114,16 @@ async function generateSUSWordProposal(btn) {
         });
 
         // --- 4. Save ---
+        if (window.updateProgressBar) await window.updateProgressBar(95, "Saving File...");
         const blob = await Packer.toBlob(docObj);
         saveAs(blob, `Proposal_SUS_${quotation_Number}.docx`);
+        if (window.updateProgressBar) await window.updateProgressBar(100, "Download Started!");
 
     } catch (e) {
         console.error(e);
         alert('Error generating Word Doc: ' + e.message);
     } finally {
+        if (window.hideProgressBar) window.hideProgressBar();
         btn.textContent = 'Generate Proposal Word';
         btn.disabled = false;
     }

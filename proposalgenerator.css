@@ -135,3 +135,56 @@ button#generateWordBtn:disabled {
     font-size: 14px;
     color: #000000;
 }
+
+
+/* Progress Bar Modal Styles */
+        #progressModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 9999; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .progress-modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 25px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4caf50; /* Green */
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+            transition: width 0.3s ease-in-out;
+        }

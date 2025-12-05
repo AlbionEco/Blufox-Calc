@@ -9,8 +9,13 @@ import saveAs from "https://esm.sh/file-saver@2.0.5"; // Fixed: Default import
 async function generateBFProposal(btn) {
     btn.textContent = 'Generating...';
     btn.disabled = true;
+    
+    // Show progress bar
+    if (window.showProgressBar) window.showProgressBar("Initializing BF Proposal PDF...");
 
     try {
+        if (window.updateProgressBar) await window.updateProgressBar(5, "Processing Inputs...");
+        
         // 1. Get Form Inputs
         const quotation_Number = document.getElementById('quotation_Number').value;
         const client_Name = document.getElementById('client_Name').value;
@@ -156,11 +161,13 @@ async function generateBFProposal(btn) {
 
 
         //  Load Images (Async)
+        if (window.updateProgressBar) await window.updateProgressBar(15, "Loading Images...");
         const headerImgData = await loadImage('Images for Proposal/header.png');
         const footerImgData = await loadImage('Images for Proposal/footer.png');
 
 
         // 6. Generate PDF
+        if (window.updateProgressBar) await window.updateProgressBar(30, "Initializing Document...");
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
@@ -189,6 +196,7 @@ async function generateBFProposal(btn) {
         // --- Content Generation ---
 
         // NOTE: We start content Y position *below* the header height
+        if (window.updateProgressBar) await window.updateProgressBar(40, "Creating Page 1...");
 
         // ---------------------------------Page 1 ---------------------------------
         let currentY = headerHeight + 25;
@@ -257,7 +265,7 @@ async function generateBFProposal(btn) {
         });
 
 
-
+        if (window.updateProgressBar) await window.updateProgressBar(50, "Creating Pages 2-6...");
         // -----------------------------------------------Page 2 ---------------------------------
         // 1. Force a new page
         doc.addPage();
@@ -916,6 +924,8 @@ async function generateBFProposal(btn) {
 
         currentY = doc.lastAutoTable.finalY + 8;
 
+        if (window.updateProgressBar) await window.updateProgressBar(75, "Adding Notes & Commercials...");
+
         // ---------------------------------------Page 8 End -------------------------------------------------
         //----------------------------------------Page 9 Start -----------------------------------------------
 
@@ -1126,6 +1136,7 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
         });
 
 
+        if (window.updateProgressBar) await window.updateProgressBar(90, "Finalizing Document...");
 
         // ---------------------------------------Page 10 End -------------------------------------------------
         //----------------------------------------Page 11 Start -----------------------------------------------
@@ -1254,12 +1265,14 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
         }
 
         // Save PDF
+        if (window.updateProgressBar) await window.updateProgressBar(100, "Download Started!");
         doc.save(`Proposal_${quotation_Number}.pdf`);
 
     } catch (e) {
         console.error(e);
         alert('Error generating PDF: ' + e.message);
     } finally {
+        if (window.hideProgressBar) window.hideProgressBar();
         btn.textContent = 'Generate Proposal PDF';
         btn.disabled = false;
     }
@@ -1296,7 +1309,12 @@ async function generateBFWordProposal(btn) {
     btn.textContent = 'Generating Word Doc...';
     btn.disabled = true;
 
+    // Show progress bar
+    if (window.showProgressBar) window.showProgressBar("Initializing BF Proposal Word Document...");
+
     try {
+        if (window.updateProgressBar) await window.updateProgressBar(5, "Processing Form Data...");
+        
         // --- 1. Gather Data (Exact same logic as PDF) ---
         const quotation_Number = document.getElementById('quotation_Number').value;
         const client_Name = document.getElementById('client_Name').value;
@@ -1411,6 +1429,8 @@ async function generateBFWordProposal(btn) {
         const formattedDate = formatToDDMMYYYY(date);
 
         // --- 2. Load Images & Convert to Uint8Array for docx ---
+        if (window.updateProgressBar) await window.updateProgressBar(20, "Loading Image Assets...");
+        
         // Using existing helper `loadImage` then converting to ArrayBuffer
         const headerDataUrl = await loadImage('Images for Proposal/header.png');
         const footerDataUrl = await loadImage('Images for Proposal/footer.png');
@@ -1427,6 +1447,8 @@ async function generateBFWordProposal(btn) {
         const cycleImgBuffer = base64ToUint8Array(cycleImgDataUrl);
 
         // --- 3. Construct Word Document ---
+        if (window.updateProgressBar) await window.updateProgressBar(40, "Building Document Structure...");
+        
         const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, WidthType, BorderStyle, Header, Footer, AlignmentType, PageBreak, VerticalAlign, HeightRule } = docx;
 
         // --- Helper for Tables ---
@@ -1623,6 +1645,7 @@ async function generateBFWordProposal(btn) {
             ]
         });
 
+        if (window.updateProgressBar) await window.updateProgressBar(50, "Generating Content Pages...");
 
         // --- Page 1 Content ---
         const page1Children = [
@@ -2073,6 +2096,8 @@ async function generateBFWordProposal(btn) {
         }
 
         // --- Assemble Document ---
+        if (window.updateProgressBar) await window.updateProgressBar(80, "Finalizing Word Document...");
+
         const finalChildren = [
             ...page1Children,
             ...page2Children,
@@ -2134,13 +2159,16 @@ async function generateBFWordProposal(btn) {
         });
 
         // --- 4. Save ---
+        if (window.updateProgressBar) await window.updateProgressBar(95, "Saving File...");
         const blob = await Packer.toBlob(docObj);
         saveAs(blob, `Proposal_${quotation_Number}.docx`);
+        if (window.updateProgressBar) await window.updateProgressBar(100, "Download Started!");
 
     } catch (e) {
         console.error(e);
         alert('Error generating Word Doc: ' + e.message);
     } finally {
+        if (window.hideProgressBar) window.hideProgressBar();
         btn.textContent = 'Generate Proposal Word';
         btn.disabled = false;
     }
