@@ -9,11 +9,9 @@
     <link rel="stylesheet" href="proposalgenerator.css">
     <link rel="icon" type="image/png" href="for extra use.jpg" />
 
-    <!-- PDF Libraries (Keeping these as they work fine) -->
+    <!-- PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    
-    <!-- NOTE: Word Libraries (docx, FileSaver) are now imported directly inside the JS files as modules to prevent loading errors -->
 </head>
 
 <body>
@@ -138,7 +136,6 @@
 
                 <div class="btn-container">
                     <button type="button" id="generateBtn">Generate Proposal PDF</button>
-                    <button type="button" id="generateWordBtn" >Generate Proposal Word</button>
                 </div>
             </form>
         </div>
@@ -182,18 +179,6 @@
                         resolve(createPlaceholderImage(200, 200, 200));
                     };
                 });
-            }
-
-            // Shared function to convert base64 DataURL (from loadImage) to Uint8Array for docx
-            function base64ToUint8Array(dataUrl) {
-                const arr = dataUrl.split(',');
-                const bstr = atob(arr[1]);
-                let n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                return u8arr;
             }
 
             /**
@@ -278,10 +263,9 @@
             }
         </script>
 
-        <!-- Import Separated Logic Files AS MODULES -->
-        <!-- type="module" allows them to import libraries directly -->
-        <script type="module" src="bf_proposal.js"></script>
-        <script type="module" src="sus_proposal.js"></script>
+        <!-- Import Separated Logic Files -->
+        <script src="bf_proposal.js"></script>
+        <script src="sus_proposal.js"></script>
 
         <!-- Main Click Handler -->
         <script>
@@ -289,39 +273,18 @@
                 const module = document.getElementById('module').value;
                 
                 // Dispatch to correct logic based on module name
-                // Since files are modules, functions are attached to 'window' explicitly.
                 if (module.startsWith('SUS')) {
-                    if (typeof window.generateSUSProposal === 'function') {
-                        await window.generateSUSProposal(this);
+                    if (typeof generateSUSProposal === 'function') {
+                        await generateSUSProposal(this);
                     } else {
-                        alert("SUS Proposal logic not loaded yet. Please wait a moment.");
+                        alert("SUS Proposal logic not loaded.");
                     }
                 } else {
                     // Default to BF logic for BF series
-                    if (typeof window.generateBFProposal === 'function') {
-                        await window.generateBFProposal(this);
+                    if (typeof generateBFProposal === 'function') {
+                        await generateBFProposal(this);
                     } else {
-                        alert("BF Proposal logic not loaded yet. Please wait a moment.");
-                    }
-                }
-             });
-
-             document.getElementById('generateWordBtn').addEventListener('click', async function () {
-                const module = document.getElementById('module').value;
-                
-                // Dispatch to correct logic based on module name
-                if (module.startsWith('SUS')) {
-                    if (typeof window.generateSUSWordProposal === 'function') {
-                        await window.generateSUSWordProposal(this);
-                    } else {
-                        alert("SUS Word Proposal logic not loaded yet. Please wait a moment.");
-                    }
-                } else {
-                    // Default to BF logic for BF series    
-                    if (typeof window.generateBFWordProposal === 'function') {
-                        await window.generateBFWordProposal(this);
-                    } else {
-                        alert("BF Word Proposal logic not loaded yet. Please wait a moment.");
+                        alert("BF Proposal logic not loaded.");
                     }
                 }
              });

@@ -101,7 +101,8 @@ h3{
     justify-content: center;
 }
 
-button#generateBtn {
+button#generateBtn, button#generateWordBtn {
+  margin: 0px 30px;
     background-color: #007BFF;
     color: white;
     padding: 12px 24px;
@@ -113,14 +114,18 @@ button#generateBtn {
     transition: background-color 0.3s;
 }
 
-button#generateBtn:hover {
+button#generateBtn:hover, 
+button#generateWordBtn:hover {
     background-color: #0056b3;
 }
 
-button#generateBtn:disabled {
+button#generateBtn:disabled, 
+button#generateWordBtn:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+
 
 .footer {
     margin-top: 20px;
