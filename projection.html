@@ -350,6 +350,39 @@
         const CebAcidChemicalSolutionInjectionTime = 20;
         const CebAcidChemicalInjectionFlowrate = parseFloat(CebacidRequiredChemicalSolutionVolume / CebAcidChemicalSolutionInjectionTime).toFixed(1);
 
+        let CebDosingPumpCapacity = parseFloat((CebRequiredChemicalQuantityeachTime/CebChemicalSolutionInjectionTime)*60).toFixed(0);
+        let CebAcidDosingPumpCapacity = parseFloat((CebacidRequiredChemicalQuantityeachTime/CebAcidChemicalSolutionInjectionTime)*60).toFixed(0);
+        let CipDosingPumpCapacity = parseFloat((CipRequiredChemicalQuantityeachTime/CipChemicalSolutionInjectionTime)*60).toFixed(0);
+        let AcidDosingPumpCapacity = parseFloat((acidRequiredChemicalQuantityeachTime/acidChemicalSolutionInjectionTime)*60).toFixed(0);
+        // if (CebDosingPumpCapacity<=6 || CebAcidDosingPumpCapacity<=6 || CipDosingPumpCapacity<=6){
+        //   CebDosingPumpCapacity = 6;
+        //   CebAcidDosingPumpCapacity = 6;
+        //   CipDosingPumpCapacity = 6;
+        // } else if(CebDosingPumpCapacity>6 || CebDosingPumpCapacity<=10 || 
+        //           CebAcidDosingPumpCapacity>6 || CebAcidDosingPumpCapacity<=10 ||
+        //           CipDosingPumpCapacity>6 || CipDosingPumpCapacity<=10){
+        //   CebDosingPumpCapacity = 10;
+        //   CebAcidDosingPumpCapacity = 10;
+        //   CipDosingPumpCapacity = 10;
+        // } else if(CebDosingPumpCapacity>10 || CebDosingPumpCapacity<=15 || 
+        //           CebAcidDosingPumpCapacity>10 || CebAcidDosingPumpCapacity<=15 ||
+        //           CipDosingPumpCapacity>10 || CipDosingPumpCapacity>=15){
+        //   CebDosingPumpCapacity = 15;
+        //   CebAcidDosingPumpCapacity = 15;
+        //   CipDosingPumpCapacity=15;
+        // } else if (CebDosingPumpCapacity>15 || CebDosingPumpCapacity<=20 || 
+        //           CebAcidDosingPumpCapacity>15 || CebAcidDosingPumpCapacity<=20 ||
+        //           CipDosingPumpCapacity>15 || CipDosingPumpCapacity<=20){
+        //   CebDosingPumpCapacity = 20;
+        //   CebAcidDosingPumpCapacity = 20;
+        //   CipDosingPumpCapacity = 20;
+        // }  else if (CebDosingPumpCapacity>20 || CebDosingPumpCapacity<=25 || 
+        //             CebAcidDosingPumpCapacity>20 || CebAcidDosingPumpCapacity<=25 ||
+        //             CipDosingPumpCapacity>20 || CipDosingPumpCapacity<=25){
+        //   CebDosingPumpCapacity = 25;
+        //   CebAcidDosingPumpCapacity = 25;
+        //   CipDosingPumpCapacity = 25
+        // }
 
 
         let ModuleSize = "";
@@ -601,10 +634,16 @@
                     <td>min</td>
                 </tr>
                 <tr>
-                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td style="padding-left:15%;">Chemical injection flow rate (with Chemical + Water)</td>
                     <td>${CebChemicalInjectionFlowrate} </td>
                     <td>L/min</td>
                 </tr>
+                <tr>
+                    <td style="padding-left:15%;">Dosing Pump Capacity</td>
+                    <td>${CebDosingPumpCapacity} </td>
+                    <td>LPH</td>
+                </tr>
+                
                 <tr>
                     <td class="heading3" colspan=2 >CEB (acid, Maintenance cleaning by Citric acid)</td>
                     <td></td>
@@ -630,11 +669,15 @@
                     <td>min</td>
                 </tr>
                 <tr>
-                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td style="padding-left:15%;">Chemical injection flow rate (with Chemical + Water)</td>
                     <td>${CebAcidChemicalInjectionFlowrate} </td>
                     <td>L/min</td>
                 </tr>
-
+<tr>
+                    <td style="padding-left:15%;">Dosing Pump Capacity</td>
+                    <td>${CebAcidDosingPumpCapacity} </td>
+                    <td>LPH</td>
+                </tr>
                 <tr>
                     <td class="heading3" colspan=2 >CIP (Recovery cleaning - Every 4-6 Months)</td>
                     <td></td>
@@ -660,11 +703,15 @@
                     <td>min</td>
                 </tr>
                 <tr>
-                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td style="padding-left:15%;">Chemical injection flow rate (with Chemical + Water)</td>
                     <td>${CipChemicalInjectionFlowrate} </td>
                     <td>L/min</td>
                 </tr>
-
+<tr>
+                    <td style="padding-left:15%;">Dosing Pump Capacity</td>
+                    <td>${CipDosingPumpCapacity} </td>
+                    <td>LPH</td>
+                </tr>
                 <tr>
                     <td class="heading3" colspan=2 >CIP (acid, Recovery cleaning by Citric acid)</td>
                     <td></td>
@@ -690,9 +737,14 @@
                     <td>min</td>
                 </tr>
                 <tr>
-                    <td style="padding-left:15%;">Chemical injection flow rate</td>
+                    <td style="padding-left:15%;">Chemical injection flow rate (with Chemical + Water)</td>
                     <td>${acidChemicalInjectionFlowrate} </td>
                     <td>L/min</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15%;">Dosing Pump Capacity</td>
+                    <td>${AcidDosingPumpCapacity} </td>
+                    <td>LPH</td>
                 </tr>
             <tr>
               <td colspan=3 style="text-align:left; color:red;font-size:16px"><span class="bold">Note :</span> 
