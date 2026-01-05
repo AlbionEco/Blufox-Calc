@@ -72,26 +72,48 @@
 
                     <div class="form-group">
                         <label for="module">Select Membrane Module:</label>
-                        <select id="module" required>
-                            <!-- Added BF Series models -->
-                            <option value="BF100">BF100</option>
-                            <option value="BF125">BF125</option>
-                            <option value="BF200">BF200</option>
-                            <option value="BF300">BF300</option>
-                            <option value="BF100N">BF100N</option>
-                            <option value="BF150N">BF150N</option>
-                            <option value="BF200N">BF200N</option>
-                            <option value="BF100oxy">BF100oxy</option>
-                            <option value="BF200oxy">BF200oxy</option>
-                            <option value="BF220oxy">BF220oxy</option>
-                            <!-- Added SUS Series models-->
-                            <option value="SUS097">SUS097</option>
-                            <option value="SUS113">SUS113</option>
-                             <option value="SUS193">SUS193</option>
-                             <option value="SUS227">SUS227</option>
-                             <option value="SUS313">SUS313</option>
-                             <option value="SUS400">SUS400</option>
-                        </select>
+<select id="module" required>
+
+    <!-- BF Series -->
+    <optgroup label="BF Series">
+        <option value="BF100">BF100</option>
+        <option value="BF125">BF125</option>
+        <option value="BF200">BF200</option>
+        <option value="BF300">BF300</option>
+    </optgroup>
+
+    <!-- BF N Series -->
+    <optgroup label="BF N Series">
+        <option value="BF100N">BF100N</option>
+        <option value="BF150N">BF150N</option>
+        <option value="BF200N">BF200N</option>
+    </optgroup>
+
+    <!-- BF Oxy Series -->
+    <optgroup label="BF Oxy Series">
+        <option value="BF100oxy">BF100oxy</option>
+        <option value="BF200oxy">BF200oxy</option>
+        <option value="BF220oxy">BF220oxy</option>
+    </optgroup>
+
+    <!-- SUS Series -->
+    <optgroup label="SUS Series">
+        <option value="SUS097">SUS097</option>
+        <option value="SUS113">SUS113</option>
+        <option value="SUS193">SUS193</option>
+        <option value="SUS227">SUS227</option>
+        <option value="SUS313">SUS313</option>
+        <option value="SUS400">SUS400</option>
+    </optgroup>
+
+    <!-- 500 S Series -->
+    <optgroup label="500 Series">
+        <option value="500S">BF500S (28m2)</option>
+        <option value="500D">BF500D Series</option>
+    </optgroup>
+
+</select>
+
                     </div>
 
                     <div class="form-group">
@@ -312,6 +334,12 @@
                     membraneSurfaceAreaPerMBR = 31.3; 
                 } else if (module == "SUS400") {
                     membraneSurfaceAreaPerMBR = 40; 
+
+                    // 500 Series started from below
+                } else if (module == "500S") {
+                    membraneSurfaceAreaPerMBR = 28; 
+                } else if (module == "500D") {
+                    membraneSurfaceAreaPerMBR = 0; 
                 }
                 
                 // Avoid division by zero
@@ -328,6 +356,7 @@
         <!-- type="module" allows them to import libraries directly -->
         <script type="module" src="bf_proposal.js"></script>
         <script type="module" src="sus_proposal.js"></script>
+        <script type="module" src="500s_proposal.js"></script>
 
         <!-- Main Click Handler -->
         <script>
@@ -342,12 +371,18 @@
                     } else {
                         alert("SUS Proposal logic not loaded yet. Please wait a moment.");
                     }
-                } else {
+                } else if (module.startsWith('BF')) {
                     // Default to BF logic for BF series
                     if (typeof window.generateBFProposal === 'function') {
                         await window.generateBFProposal(this);
                     } else {
                         alert("BF Proposal logic not loaded yet. Please wait a moment.");
+                    }
+                } else if (module.startsWith('500S')) {
+                    if (typeof window.generate500SProposal === 'function') {
+                        await window.generate500SProposal(this);
+                    } else {
+                        alert("BF500S Proposal logic not loaded yet. Please wait a moment.");
                     }
                 }
              });
@@ -362,12 +397,19 @@
                     } else {
                         alert("SUS Word Proposal logic not loaded yet. Please wait a moment.");
                     }
-                } else {
+                } else if (module.startsWith('BF')){
                     // Default to BF logic for BF series    
                     if (typeof window.generateBFWordProposal === 'function') {
                         await window.generateBFWordProposal(this);
                     } else {
                         alert("BF Word Proposal logic not loaded yet. Please wait a moment.");
+                    }
+                } else if (module.startsWith('500S')){
+                    // Default to BF logic for BF series    
+                    if (typeof window.generate500SWordProposal === 'function') {
+                        await window.generate500SWordProposal(this);
+                    } else {
+                        alert("BF500S Word Proposal logic not loaded yet. Please wait a moment.");
                     }
                 }
              });
