@@ -12,7 +12,7 @@
     <!-- PDF Libraries (Keeping these as they work fine) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    
+
     <!-- NOTE: Word Libraries (docx, FileSaver) are now imported directly inside the JS files as modules to prevent loading errors -->
 </head>
 
@@ -72,47 +72,47 @@
 
                     <div class="form-group">
                         <label for="module">Select Membrane Module:</label>
-<select id="module" required>
+                        <select id="module" required>
 
-    <!-- BF Series -->
-    <optgroup label="BF Series">
-        <option value="BF100">BF100</option>
-        <option value="BF125">BF125</option>
-        <option value="BF200">BF200</option>
-        <option value="BF300">BF300</option>
-    </optgroup>
+                            <!-- BF Series -->
+                            <optgroup label="BF Series">
+                                <option value="BF100">BF100</option>
+                                <option value="BF125">BF125</option>
+                                <option value="BF200">BF200</option>
+                                <option value="BF300">BF300</option>
+                            </optgroup>
 
-    <!-- BF N Series -->
-    <optgroup label="BF N Series">
-        <option value="BF100N">BF100N</option>
-        <option value="BF150N">BF150N</option>
-        <option value="BF200N">BF200N</option>
-    </optgroup>
+                            <!-- BF N Series -->
+                            <optgroup label="BF N Series">
+                                <option value="BF100N">BF100N</option>
+                                <option value="BF150N">BF150N</option>
+                                <option value="BF200N">BF200N</option>
+                            </optgroup>
 
-    <!-- BF Oxy Series -->
-    <optgroup label="BF Oxy Series">
-        <option value="BF100oxy">BF100oxy</option>
-        <option value="BF200oxy">BF200oxy</option>
-        <option value="BF220oxy">BF220oxy</option>
-    </optgroup>
+                            <!-- BF Oxy Series -->
+                            <optgroup label="BF Oxy Series">
+                                <option value="BF100oxy">BF100oxy</option>
+                                <option value="BF200oxy">BF200oxy</option>
+                                <option value="BF220oxy">BF220oxy</option>
+                            </optgroup>
 
-    <!-- SUS Series -->
-    <optgroup label="SUS Series">
-        <option value="SUS097">SUS097</option>
-        <option value="SUS113">SUS113</option>
-        <option value="SUS193">SUS193</option>
-        <option value="SUS227">SUS227</option>
-        <option value="SUS313">SUS313</option>
-        <option value="SUS400">SUS400</option>
-    </optgroup>
+                            <!-- SUS Series -->
+                            <optgroup label="SUS Series">
+                                <option value="SUS097">SUS097</option>
+                                <option value="SUS113">SUS113</option>
+                                <option value="SUS193">SUS193</option>
+                                <option value="SUS227">SUS227</option>
+                                <option value="SUS313">SUS313</option>
+                                <option value="SUS400">SUS400</option>
+                            </optgroup>
 
-    <!-- 500 S Series -->
-    <optgroup label="500 Series">
-        <option value="500S">BF500S (28m2)</option>
-        <option value="500D">BF500D Series</option>
-    </optgroup>
+                            <!-- 500 S Series -->
+                            <optgroup label="500 Series">
+                                <option value="500S">BF500S (28m2)</option>
+                                <option value="500D">BF500D Series</option>
+                            </optgroup>
 
-</select>
+                        </select>
 
                     </div>
 
@@ -160,7 +160,7 @@
 
                 <div class="btn-container">
                     <button type="button" id="generateBtn">Generate Proposal PDF</button>
-                    <button type="button" id="generateWordBtn" >Generate Proposal Word</button>
+                    <button type="button" id="generateWordBtn">Generate Proposal Word</button>
                 </div>
             </form>
         </div>
@@ -178,11 +178,11 @@
         <!-- SHARED UTILITIES -->
         <script>
             // --- Progress Bar Functions ---
-            window.showProgressBar = function(message) {
+            window.showProgressBar = function (message) {
                 const modal = document.getElementById('progressModal');
                 const text = document.getElementById('progressText');
                 const bar = document.getElementById('progressBar');
-                
+
                 if (modal && text && bar) {
                     text.textContent = message || "Processing...";
                     bar.style.width = '0%';
@@ -191,10 +191,10 @@
                 }
             };
 
-            window.updateProgressBar = async function(percent, message) {
+            window.updateProgressBar = async function (percent, message) {
                 const text = document.getElementById('progressText');
                 const bar = document.getElementById('progressBar');
-                
+
                 if (text && bar) {
                     if (message) text.textContent = message;
                     bar.style.width = percent + '%';
@@ -204,7 +204,7 @@
                 await new Promise(resolve => setTimeout(resolve, 10));
             };
 
-            window.hideProgressBar = function() {
+            window.hideProgressBar = function () {
                 const modal = document.getElementById('progressModal');
                 if (modal) {
                     setTimeout(() => {
@@ -229,26 +229,29 @@
             document.getElementById('date').value = getTodayDateString();
 
             function loadImage(url) {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     const img = new Image();
-                    img.crossOrigin = "Anonymous"; // Allows loading from some external sources if needed
+                    img.crossOrigin = "Anonymous";
                     img.src = url;
 
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        canvas.width = img.width;
-                        canvas.height = img.height;
+
+                        const MAX_WIDTH = 1600; // perfect for A4 print quality
+                        const scale = Math.min(1, MAX_WIDTH / img.width);
+
+                        canvas.width = img.width * scale;
+                        canvas.height = img.height * scale;
+
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0);
-                        // Convert to JPEG data URL
-                        resolve(canvas.toDataURL('image/jpeg'));
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                        // High quality JPEG (almost visually lossless)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                        resolve(dataUrl);
                     };
 
-                    img.onerror = () => {
-                        console.error(`Failed to load image at: ${url}`);
-                        // If image fails, return a grey placeholder so PDF doesn't crash
-                        resolve(createPlaceholderImage(200, 200, 200));
-                    };
+                    img.onerror = () => resolve(createPlaceholderImage(200, 200, 200));
                 });
             }
 
@@ -288,12 +291,12 @@
             }
 
             // --- Calculation Logic (Immediate UI Feedback) ---
-            
+
             // Set listeners
             const calculationInputs = ['flux', 'flowRate', 'module', 'workingHr'];
             calculationInputs.forEach(id => {
                 const el = document.getElementById(id);
-                if(el) {
+                if (el) {
                     el.oninput = myFunction;
                     el.onchange = myFunction;
                 }
@@ -306,7 +309,7 @@
                 const flux = parseFloat(document.getElementById('flux').value) || 0;
                 const workingHr = document.getElementById('workingHr').value;
                 let membraneSurfaceAreaPerMBR = 0;
-                
+
                 // Perform calculations based on formulas
                 if (module == "BF100N" || module == "BF100oxy" || module == "BF100") {
                     membraneSurfaceAreaPerMBR = 10;
@@ -319,29 +322,29 @@
                 } else if (module == "BF300") {
                     membraneSurfaceAreaPerMBR = 30;
                 } else if (module == "BF220oxy") {
-                    membraneSurfaceAreaPerMBR = 22;  
-                    
+                    membraneSurfaceAreaPerMBR = 22;
+
                     // SUS series started from below
                 } else if (module == "SUS097") {
-                    membraneSurfaceAreaPerMBR = 9.7; 
+                    membraneSurfaceAreaPerMBR = 9.7;
                 } else if (module == "SUS113") {
-                    membraneSurfaceAreaPerMBR = 11.3; 
+                    membraneSurfaceAreaPerMBR = 11.3;
                 } else if (module == "SUS193") {
-                    membraneSurfaceAreaPerMBR = 19.3; 
+                    membraneSurfaceAreaPerMBR = 19.3;
                 } else if (module == "SUS227") {
-                    membraneSurfaceAreaPerMBR = 22.7; 
+                    membraneSurfaceAreaPerMBR = 22.7;
                 } else if (module == "SUS313") {
-                    membraneSurfaceAreaPerMBR = 31.3; 
+                    membraneSurfaceAreaPerMBR = 31.3;
                 } else if (module == "SUS400") {
-                    membraneSurfaceAreaPerMBR = 40; 
+                    membraneSurfaceAreaPerMBR = 40;
 
                     // 500 Series started from below
                 } else if (module == "500S") {
-                    membraneSurfaceAreaPerMBR = 28; 
+                    membraneSurfaceAreaPerMBR = 28;
                 } else if (module == "500D") {
-                    membraneSurfaceAreaPerMBR = 0; 
+                    membraneSurfaceAreaPerMBR = 0;
                 }
-                
+
                 // Avoid division by zero
                 if (flux > 0 && workingHr > 0 && membraneSurfaceAreaPerMBR > 0) {
                     const TotalNumberOfModule = Math.ceil((flowRate * 1000) / (flux * workingHr * membraneSurfaceAreaPerMBR));
@@ -360,9 +363,9 @@
 
         <!-- Main Click Handler -->
         <script>
-             document.getElementById('generateBtn').addEventListener('click', async function () {
+            document.getElementById('generateBtn').addEventListener('click', async function () {
                 const module = document.getElementById('module').value;
-                
+
                 // Dispatch to correct logic based on module name
                 // Since files are modules, functions are attached to 'window' explicitly.
                 if (module.startsWith('SUS')) {
@@ -385,11 +388,11 @@
                         alert("BF500S Proposal logic not loaded yet. Please wait a moment.");
                     }
                 }
-             });
+            });
 
-             document.getElementById('generateWordBtn').addEventListener('click', async function () {
+            document.getElementById('generateWordBtn').addEventListener('click', async function () {
                 const module = document.getElementById('module').value;
-                
+
                 // Dispatch to correct logic based on module name
                 if (module.startsWith('SUS')) {
                     if (typeof window.generateSUSWordProposal === 'function') {
@@ -397,14 +400,14 @@
                     } else {
                         alert("SUS Word Proposal logic not loaded yet. Please wait a moment.");
                     }
-                } else if (module.startsWith('BF')){
+                } else if (module.startsWith('BF')) {
                     // Default to BF logic for BF series    
                     if (typeof window.generateBFWordProposal === 'function') {
                         await window.generateBFWordProposal(this);
                     } else {
                         alert("BF Word Proposal logic not loaded yet. Please wait a moment.");
                     }
-                } else if (module.startsWith('500S')){
+                } else if (module.startsWith('500S')) {
                     // Default to BF logic for BF series    
                     if (typeof window.generate500SWordProposal === 'function') {
                         await window.generate500SWordProposal(this);
@@ -412,7 +415,7 @@
                         alert("BF500S Word Proposal logic not loaded yet. Please wait a moment.");
                     }
                 }
-             });
+            });
         </script>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -426,4 +429,5 @@
             crossorigin="anonymous"></script>
 
 </body>
+
 </html>

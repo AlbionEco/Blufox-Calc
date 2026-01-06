@@ -70,14 +70,18 @@ async function generate500SProposal(btn) {
         //  Load Images (Async)
         // CHANGE THE FILE NAMES BELOW TO MATCH YOUR IMAGES
         if (window.updateProgressBar) await window.updateProgressBar(15, "Loading Assets...");
-        const headerImgData = await loadImage('Images for Proposal/header.png');
-        const footerImgData = await loadImage('Images for Proposal/footer.png');
+        const headerImgData = await loadImage('Images for Proposal/header.jpg');
+        const footerImgData = await loadImage('Images for Proposal/footer.jpg');
 
 
         // 6. Generate PDF
         if (window.updateProgressBar) await window.updateProgressBar(30, "Creating PDF Document...");
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        const doc = new jsPDF({
+    compress: true,
+    unit: "mm",
+    format: "a4"
+});
 
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
@@ -107,7 +111,7 @@ async function generate500SProposal(btn) {
         if (window.updateProgressBar) await window.updateProgressBar(40, "Generating Pages...");
 
         // ---------------------------------Page 1 ---------------------------------
-        let currentY = headerHeight + 25;
+        let currentY = headerHeight + 15;
 
         // Ref and To section
         doc.setFontSize(11);
@@ -145,8 +149,8 @@ async function generate500SProposal(btn) {
 
         // Image Section
         var img = new Image()
-        img.src = 'Images for Proposal/500S.png'
-        doc.addImage(img, 'png', 85, currentY, 57, 100);
+        img.src = 'Images for Proposal/500S.jpg'
+        doc.addImage(img, 'jpeg', 85, currentY, 57, 100);
         currentY += 120; //190 total
 
         //features section
@@ -177,7 +181,7 @@ async function generate500SProposal(btn) {
         // 1. Force a new page
         doc.addPage();
 
-        currentY = headerHeight + 25;
+        currentY = headerHeight + 15;
         //Heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
@@ -246,7 +250,7 @@ async function generate500SProposal(btn) {
         // 1. Force a new page
         doc.addPage();
 
-        currentY = headerHeight + 25;
+        currentY = headerHeight + 15;
         //Heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -472,7 +476,7 @@ async function generate500SProposal(btn) {
         // 1. Force a new page
         doc.addPage();
 
-        currentY = headerHeight + 25;
+        currentY = headerHeight + 15;
 
         // Bullet Point 1 start----------------------------------
         // heading
@@ -609,7 +613,7 @@ async function generate500SProposal(btn) {
         //-----------------------------------------Page 5 Start ---------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
         //heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -618,14 +622,13 @@ async function generate500SProposal(btn) {
         currentY += 5; //45 total
         // Image Section
         var img2 = new Image()
-        //img2.src = 'MembraneP&ID.png'
         img2.src = 'Images for Proposal/MembraneP&ID.jpg'
-        doc.addImage(img2, 'png', 20, currentY, 180, 215);
+        doc.addImage(img2, 'jpeg', 20, currentY, 180, 215);
         // ---------------------------------------Page 5 End -------------------------------------------------
         //----------------------------------------Page 6 Start -----------------------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
         //heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -707,7 +710,7 @@ async function generate500SProposal(btn) {
 
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
 
         // -------------------- NOTES SECTION --------------------
 
@@ -1061,9 +1064,9 @@ async function generate500SWordProposal(btn) {
         if (window.updateProgressBar) await window.updateProgressBar(20, "Loading Image Assets...");
 
         // Using existing helper `loadImage` then converting to ArrayBuffer
-        const headerDataUrl = await loadImage('Images for Proposal/header.png');
-        const footerDataUrl = await loadImage('Images for Proposal/footer.png');
-        const membraneImgDataUrl = await loadImage('Images for Proposal/500S.png');
+        const headerDataUrl = await loadImage('Images for Proposal/header.jpg');
+        const footerDataUrl = await loadImage('Images for Proposal/footer.jpg');
+        const membraneImgDataUrl = await loadImage('Images for Proposal/500S.jpg');
         const pidImgDataUrl = await loadImage('Images for Proposal/MembraneP&ID.jpg');
 
         const headerBuffer = base64ToUint8Array(headerDataUrl);
@@ -1193,8 +1196,6 @@ async function generate500SWordProposal(btn) {
 
         // Spacer for 3 lines (Size 11)
         const spacer = [
-            new Paragraph({ text: "" }),
-            new Paragraph({ text: "" }),
             new Paragraph({ text: "" })
         ];
 

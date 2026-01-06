@@ -183,14 +183,18 @@ async function generateSUSProposal(btn) {
         //  Load Images (Async)
         // CHANGE THE FILE NAMES BELOW TO MATCH YOUR IMAGES
         if (window.updateProgressBar) await window.updateProgressBar(15, "Loading Assets...");
-        const headerImgData = await loadImage('Images for Proposal/header.png');
-        const footerImgData = await loadImage('Images for Proposal/footer.png');
+        const headerImgData = await loadImage('Images for Proposal/header.jpg');
+        const footerImgData = await loadImage('Images for Proposal/footer.jpg');
 
 
         // 6. Generate PDF
         if (window.updateProgressBar) await window.updateProgressBar(30, "Creating PDF Document...");
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        const doc = new jsPDF({
+    compress: true,
+    unit: "mm",
+    format: "a4"
+});
 
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
@@ -220,7 +224,7 @@ async function generateSUSProposal(btn) {
         if (window.updateProgressBar) await window.updateProgressBar(40, "Generating Pages...");
 
         // ---------------------------------Page 1 ---------------------------------
-        let currentY = headerHeight + 25;
+        let currentY = headerHeight + 15;
 
         // Ref and To section
         doc.setFontSize(11);
@@ -260,7 +264,7 @@ async function generateSUSProposal(btn) {
         // Image Section
         var img = new Image()
         img.src = 'Images for Proposal/SUS_img.jpg'
-        doc.addImage(img, 'png', 50, currentY, 90, 100);
+        doc.addImage(img, 'jpeg', 50, currentY, 90, 100);
         currentY += 120; //190 total
 
         //features section
@@ -291,7 +295,7 @@ async function generateSUSProposal(btn) {
         // 1. Force a new page
         doc.addPage();
 
-        currentY = headerHeight + 25;
+        currentY = headerHeight + 15;
         //Heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -519,7 +523,7 @@ async function generateSUSProposal(btn) {
         // 1. Force a new page
         doc.addPage();
 
-        currentY = headerHeight + 25;
+        currentY = headerHeight + 15;
 
         // Bullet Point 10 start----------------------------------
         // heading
@@ -658,7 +662,7 @@ async function generateSUSProposal(btn) {
         //-----------------------------------------Page 4 Start ---------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
 
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -775,7 +779,7 @@ async function generateSUSProposal(btn) {
         //-----------------------------------------Page 5 Start ---------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
         //heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -784,14 +788,13 @@ async function generateSUSProposal(btn) {
         currentY += 5; //45 total
         // Image Section
         var img2 = new Image()
-        //img2.src = 'MembraneP&ID.png'
         img2.src = 'Images for Proposal/MembraneP&ID.jpg'
-        doc.addImage(img2, 'png', 20, currentY, 180, 215);
+        doc.addImage(img2, 'jpeg', 20, currentY, 180, 215);
         // ---------------------------------------Page 5 End -------------------------------------------------
         // ---------------------------------------Page 6 Start -------------------------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
         //heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -800,13 +803,13 @@ async function generateSUSProposal(btn) {
         currentY += 5; //45 total
         // Image Section
         var img3 = new Image()
-        img3.src = 'Images for Proposal/SUS_GADrawing.png'
-        doc.addImage(img3, 'png', 25, currentY, 180, 200);
+        img3.src = 'Images for Proposal/SUS_GADrawing.jpg'
+        doc.addImage(img3, 'jpeg', 25, currentY, 180, 200);
         // ---------------------------------------Page 6 End -------------------------------------------------
         //----------------------------------------Page 7 Start -----------------------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
         //heading
         doc.setFontSize(14);
         doc.setFont("helvetica", "bolditalic");
@@ -831,7 +834,7 @@ async function generateSUSProposal(btn) {
                 ['Per Frame MBR Module Surface Area', 'm2', `${MembraneSurfaceAreaPerTrain}`],
                 ['Total MBR Membrane Surface Area', 'm2', `${TotalMembraneSurfaceArea}`],
                 ['Total MBR Air Required', 'm3/hr', `${RequiredtotalAirFlowRate}`],
-                ['MBR Frame/Train Size (Each)', 'L x W x H mm', `${(length * 1000)} x ${((width) * 1000)} x ${(height * 1000)}`],
+                ['MBR Frame/Train Size (Each)', 'L x W x H mm', `${Math.ceil((length * 1000))} x ${(Math.ceil((width) * 1000))} x ${Math.ceil((height * 1000))}`],
                 ['MBR Frame MOC', '-', `SS304`],
                 ['MBR Tank Volume Required (Approx.)', 'm3', `${TotalMembraneTankVolume}`],
                 ['Permeate Pump Flow @ 12-13m Head', 'm3/hr', `${RequiredTotalFlowrateforpeakflux}`],
@@ -952,7 +955,7 @@ async function generateSUSProposal(btn) {
 
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
 
         // -------------------- NOTES SECTION --------------------
 
@@ -993,8 +996,8 @@ async function generateSUSProposal(btn) {
         currentY += 5; //45 total
         //Image
         var img4 = new Image()
-        img4.src = 'Images for Proposal/MBR working cycle programming.png'
-        doc.addImage(img4, 'png', 25, currentY, 160, 30);
+        img4.src = 'Images for Proposal/MBR working cycle programming.jpg'
+        doc.addImage(img4, 'jpeg', 25, currentY, 160, 30);
 
 
         currentY += 40;
@@ -1039,7 +1042,7 @@ async function generateSUSProposal(btn) {
         //----------------------------------------Page 10 Start -----------------------------------------------
         // 1. Force a new page
         doc.addPage();
-        currentY = headerHeight + 20;
+        currentY = headerHeight + 15;
 
 
         //currentY += 15;
@@ -1242,34 +1245,6 @@ with SS304 Skid(Frame)`, `${TotalNumberOfModule}`, `${(offer_Price * TotalNumber
         currentY += 15;
 
 
-        // --- IMAGES SECTION ---
-        // Images height is 50, plus some padding.
-        const imagesHeight = 55;
-
-        checkPageBreak(imagesHeight);
-
-        try {
-            // Image 1
-            var img5 = new Image();
-            img5.src = 'Images for Proposal/Blufox Extra Image 1.png';
-            doc.addImage(img5, 'png', 20, currentY, 50, 50);
-
-            // Image 2
-            var img6 = new Image();
-            img6.src = 'Images for Proposal/Blufox Extra Image 2.png';
-            doc.addImage(img6, 'png', 80, currentY, 50, 50);
-
-            // Image 3
-            var img7 = new Image();
-            img7.src = 'Images for Proposal/Blufox Extra Image 3.png';
-            doc.addImage(img7, 'png', 145, currentY, 50, 50);
-
-            // Advance Y after images
-            currentY += 55;
-        } catch (e) {
-            console.error("Error adding images: ", e);
-        }
-
         //----------------------------------------Page 11 End -----------------------------------------------
 
 
@@ -1442,12 +1417,12 @@ async function generateSUSWordProposal(btn) {
         if (window.updateProgressBar) await window.updateProgressBar(20, "Loading Image Assets...");
 
         // Using existing helper `loadImage` then converting to ArrayBuffer
-        const headerDataUrl = await loadImage('Images for Proposal/header.png');
-        const footerDataUrl = await loadImage('Images for Proposal/footer.png');
+        const headerDataUrl = await loadImage('Images for Proposal/header.jpg');
+        const footerDataUrl = await loadImage('Images for Proposal/footer.jpg');
         const membraneImgDataUrl = await loadImage('Images for Proposal/SUS_img.jpg');
         const pidImgDataUrl = await loadImage('Images for Proposal/MembraneP&ID.jpg');
-        const gaImgDataUrl = await loadImage('Images for Proposal/SUS_GADrawing.png');
-        const cycleImgDataUrl = await loadImage('Images for Proposal/MBR working cycle programming.png');
+        const gaImgDataUrl = await loadImage('Images for Proposal/SUS_GADrawing.jpg');
+        const cycleImgDataUrl = await loadImage('Images for Proposal/MBR working cycle programming.jpg');
 
         const headerBuffer = base64ToUint8Array(headerDataUrl);
         const footerBuffer = base64ToUint8Array(footerDataUrl);
@@ -1578,8 +1553,6 @@ async function generateSUSWordProposal(btn) {
         
         // Spacer for 3 lines (Size 11)
         const spacer = [
-             new Paragraph({ text: "" }),
-             new Paragraph({ text: "" }),
              new Paragraph({ text: "" })
         ];
         
@@ -1795,7 +1768,7 @@ async function generateSUSWordProposal(btn) {
                 ['Per Frame MBR Module Surface Area', 'm2', `${MembraneSurfaceAreaPerTrain}`],
                 ['Total MBR Membrane Surface Area', 'm2', `${TotalMembraneSurfaceArea}`],
                 ['Total MBR Air Required', 'm3/hr', `${RequiredtotalAirFlowRate}`],
-                ['MBR Frame/Train Size (Each)', 'L x W x H mm', `${(length * 1000)} x ${((width) * 1000)} x ${(height * 1000)}`],
+                ['MBR Frame/Train Size (Each)', 'L x W x H mm', `${Math.ceil((length * 1000))} x ${(Math.ceil((width) * 1000))} x ${Math.ceil((height * 1000))}`],
                 ['MBR Frame MOC', '-', `SS304`],
                 ['MBR Tank Volume Required (Approx.)', 'm3', `${TotalMembraneTankVolume}`],
                 ['Permeate Pump Flow @ 12-13m Head', 'm3/hr', `${RequiredTotalFlowrateforpeakflux}`],
@@ -2022,33 +1995,6 @@ async function generateSUSWordProposal(btn) {
         page11Children.push(new Paragraph({ children:[new TextRun({text: "Blufox Ecoventures LLP.", bold: true, color: "00008B", size: 24})]  }));
         page11Children.push(new Paragraph({ text: "" }));
 
-        // Add extra images if available (handled safely)
-        try {
-             // Reuse existing loaded images if possible or new ones. Not defined in original PDF logic block properly so skipping for parity or adding placeholder logic if file names exist
-             // For safety based on your prompt "do not change logic", I will assume these images might fail or succeed.
-             const extraImg1 = await loadImage('Images for Proposal/Blufox Extra Image 1.png');
-             const extraImg2 = await loadImage('Images for Proposal/Blufox Extra Image 2.png');
-             const extraImg3 = await loadImage('Images for Proposal/Blufox Extra Image 3.png');
-
-             // Add them side by side? Docx doesn't support float well, simpler to stack or use table. Stacking for safety.
-             page11Children.push(
-                 new Paragraph({
-                     children: [
-                         new ImageRun({ data: base64ToUint8Array(extraImg1), transformation: { width: 185, height: 185 } }),
-                         new TextRun("  "),
-                         new TextRun("  "),
-                         new TextRun("  "),
-                         new ImageRun({ data: base64ToUint8Array(extraImg2), transformation: { width: 185, height: 185 } }),
-                         new TextRun("  "),
-                         new TextRun("  "),
-                         new TextRun("  "),
-                         new ImageRun({ data: base64ToUint8Array(extraImg3), transformation: { width: 185, height: 185 } }),
-                     ]
-                 })
-             );
-        } catch(e) {
-            // Ignore if images missing
-        }
 
         // --- Assemble Document ---
         if (window.updateProgressBar) await window.updateProgressBar(80, "Finalizing SUS Word Document...");
