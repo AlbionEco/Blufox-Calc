@@ -109,7 +109,7 @@
                             <!-- 500 S Series -->
                             <optgroup label="500 Series">
                                 <option value="500S">BF500S (28m2)</option>
-                                <option value="500D">BF500D Series</option>
+                                <option value="500D">BF500D (31.6m2)</option>
                             </optgroup>
 
                         </select>
@@ -342,7 +342,7 @@
                 } else if (module == "500S") {
                     membraneSurfaceAreaPerMBR = 28;
                 } else if (module == "500D") {
-                    membraneSurfaceAreaPerMBR = 0;
+                    membraneSurfaceAreaPerMBR = 31.6;
                 }
 
                 // Avoid division by zero
@@ -360,7 +360,8 @@
         <script type="module" src="bf_proposal.js"></script>
         <script type="module" src="sus_proposal.js"></script>
         <script type="module" src="500s_proposal.js"></script>
-
+        <script type="module" src="500d_proposal.js"></script>
+    
         <!-- Main Click Handler -->
         <script>
             document.getElementById('generateBtn').addEventListener('click', async function () {
@@ -380,6 +381,12 @@
                         await window.generateBFProposal(this);
                     } else {
                         alert("BF Proposal logic not loaded yet. Please wait a moment.");
+                    }
+                } else if (module.startsWith('500D')) {
+                    if (typeof window.generate500DProposal === 'function') {
+                        await window.generate500DProposal(this);
+                    } else {
+                        alert("BF500D Proposal logic not loaded yet. Please wait a moment.");
                     }
                 } else if (module.startsWith('500S')) {
                     if (typeof window.generate500SProposal === 'function') {
@@ -406,6 +413,12 @@
                         await window.generateBFWordProposal(this);
                     } else {
                         alert("BF Word Proposal logic not loaded yet. Please wait a moment.");
+                    }
+                } else if (module.startsWith('500D')) {
+                    if (typeof window.generate500DWordProposal === 'function') {
+                        await window.generate500DWordProposal(this);
+                    } else {
+                        alert("BF500D Word Proposal logic not loaded yet. Please wait a moment.");
                     }
                 } else if (module.startsWith('500S')) {
                     // Default to BF logic for BF series    
