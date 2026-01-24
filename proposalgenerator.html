@@ -112,6 +112,13 @@
                                 <option value="500D">BF500D (31.6m2)</option>
                             </optgroup>
 
+                            <!-- Sumitomo Series -->
+                            <optgroup label="Sumitomo PTFE Membrane">
+                                <option value="12B6">Sumitomo 12B6 (6m2)</option>
+                                <option value="12B9">Sumitomo 12B9 (9m2)</option>
+                                <option value="12B12">Sumitomo 12B12 (12m2)</option>
+                            </optgroup>
+
                         </select>
 
                     </div>
@@ -343,6 +350,13 @@
                     membraneSurfaceAreaPerMBR = 28;
                 } else if (module == "500D") {
                     membraneSurfaceAreaPerMBR = 31.6;
+                } // Sumitomo Series
+                else if (module == "12B6") {
+                    membraneSurfaceAreaPerMBR = 6;
+                } else if (module == "12B9") {
+                    membraneSurfaceAreaPerMBR = 9;
+                } else if (module == "12B12") {
+                    membraneSurfaceAreaPerMBR = 12;
                 }
 
                 // Avoid division by zero
@@ -361,6 +375,7 @@
         <script type="module" src="sus_proposal.js"></script>
         <script type="module" src="500s_proposal.js"></script>
         <script type="module" src="500d_proposal.js"></script>
+        <script type="module" src="sumitomo_proposal.js"></script>
     
         <!-- Main Click Handler -->
         <script>
@@ -394,6 +409,13 @@
                     } else {
                         alert("BF500S Proposal logic not loaded yet. Please wait a moment.");
                     }
+                } else if (module.startsWith('12B6') || module.startsWith('12B9') || module.startsWith('12B12')) {
+                    // Default to Sumitomo logic logic 
+                    if (typeof window.generateSumitomoProposal === 'function') {
+                        await window.generateSumitomoProposal(this);
+                    } else {
+                        alert("Sumitomo Proposal logic not loaded yet. Please wait a moment.");
+                    }
                 }
             });
 
@@ -421,11 +443,18 @@
                         alert("BF500D Word Proposal logic not loaded yet. Please wait a moment.");
                     }
                 } else if (module.startsWith('500S')) {
-                    // Default to BF logic for BF series    
+                    // Default to 500s logic for 500s series    
                     if (typeof window.generate500SWordProposal === 'function') {
                         await window.generate500SWordProposal(this);
                     } else {
                         alert("BF500S Word Proposal logic not loaded yet. Please wait a moment.");
+                    }
+                } else if (module.startsWith('12B6') || module.startsWith('12B9') || module.startsWith('12B12')) {
+                    // Default to Sumitomo logic logic 
+                    if (typeof window.generateSumitomoWordProposal === 'function') {
+                        await window.generateSumitomoWordProposal(this);
+                    } else {
+                        alert("Sumitomo Word Proposal logic not loaded yet. Please wait a moment.");
                     }
                 }
             });
