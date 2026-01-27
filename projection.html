@@ -52,6 +52,7 @@
             <option value="BF150N">BF150N</option>
             <option value="BF200N">BF200N</option>
             <option value="BF100oxy">BF100oxy</option>
+            <option value="BF220oxy">BF220oxy</option>
             <option value="SUS100">SUS100</option>
             <option value="SUS200">SUS200</option>
             <option value="SUS300">SUS300</option>
@@ -182,6 +183,8 @@
           membraneSurfaceAreaPerMBR = 20;
         } else if (module == "BF100oxy") {
           membraneSurfaceAreaPerMBR = 10;
+        } else if (module == "BF220oxy") {
+          membraneSurfaceAreaPerMBR = 22;
         } else if (module == "SUS100") {
           membraneSurfaceAreaPerMBR = 10;
         } else if (module == "SUS200") {
@@ -235,6 +238,13 @@
           width = 710 / 1000;
           height = 1800 / 1000;
           effectiveWaterDepth = 2.1;
+          width2 = 3;
+          surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
+        } else if (module == "BF220oxy") {
+          length = ((NoofModulePerTrain + 1) * 85 + 100) / 1000;
+          width = 710 / 1000;
+          height = 2055 / 1000;
+          effectiveWaterDepth = 2.4;
           width2 = 3;
           surfaceareapertrain = (Number(length) + 0.6) * (width + 0.6) * (height + 0.3);
         } else if (module == "BF300" | module == "BF200N") {
@@ -393,6 +403,8 @@
           ModuleSize = "1000 x 534 x 46"
         } else if (module == "BF200" | module == "BF150N") {
           ModuleSize = "1500 x 534 x 46"
+        } else if (module == "BF220oxy") {
+          ModuleSize = "2055 x 534 x 46"
         } else if (module == "BF300" | module == "BF200N") {
           ModuleSize = "2000 x 534 x 46"
         } else if (module == "SUS100") {
